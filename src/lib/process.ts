@@ -103,7 +103,7 @@ export async function savePages(
     }
     for (const [term, tf] of counts) {
       stmts.push({
-        sql: "INSERT OR REPLACE INTO page_terms (file_id, page_no, term, tf) VALUES (?,?,?,?)",
+        sql: "INSERT INTO page_terms (file_id, page_no, term, tf) VALUES (?,?,?,?) ON CONFLICT (file_id, page_no, term) DO UPDATE SET tf = excluded.tf",
         args: [fileId, p.pageNo, term, tf],
       });
     }
@@ -122,7 +122,7 @@ export async function indexFileTerms(fileId: string, fields: string[], tags: str
   const push = (text: string, field: string) => {
     const terms = new Set(tokenize(normalizeArabic(text)).filter((t) => t.length >= 2));
     for (const t of terms) {
-      stmts.push({ sql: "INSERT OR IGNORE INTO file_terms (file_id, term, field) VALUES (?,?,?)", args: [fileId, t, field] });
+      stmts.push({ sql: "INSERT INTO file_terms (file_id, term, field) VALUES (?,?,?) ON CONFLICT (file_id, term, field) DO NOTHING", args: [fileId, t, field] });
     }
   };
   const [titleAr, titleEn, descAr, descEn] = fields;
@@ -158,7 +158,7 @@ export async function updatePageText(fileId: string, pageNo: number, text: strin
   if (counts.size) {
     await batch(
       Array.from(counts, ([term, tf]) => ({
-        sql: "INSERT OR REPLACE INTO page_terms (file_id, page_no, term, tf) VALUES (?,?,?,?)",
+        sql: "INSERT INTO page_terms (file_id, page_no, term, tf) VALUES (?,?,?,?) ON CONFLICT (file_id, page_no, term) DO UPDATE SET tf = excluded.tf",
         args: [fileId, pageNo, term, tf],
       })),
     );
@@ -181,8 +181,10 @@ export async function storeAndProcess(input: UploadInput) {
   const previous = await one<{ current_version: number }>("SELECT current_version FROM files WHERE id = ?", [input.fileId]);
   if (previous) {
     await run(
-      `INSERT OR REPLACE INTO pages_history (file_id, version, page_no, text, created_at)
-       SELECT file_id, ?, page_no, text, ? FROM pages_text WHERE file_id = ?`,
+      `INSERT INTO pages_history (file_id, version, page_no, text, created_at)
+       SELECT file_id, ?, page_no, text, ? FROM pages_text WHERE file_id = ?
+       ON CONFLICT (file_id, version, page_no) DO UPDATE
+       SET text = excluded.text, created_at = excluded.created_at`,
       [previous.current_version, nowIso(), input.fileId],
     );
   }

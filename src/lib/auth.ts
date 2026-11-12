@@ -16,7 +16,7 @@ async function secret(): Promise<string> {
   const existing = await one<{ value: string }>("SELECT value FROM settings WHERE key = 'auth_secret'");
   if (existing?.value) return existing.value;
   const generated = randomBytes(32).toString("hex");
-  await run("INSERT OR IGNORE INTO settings (key, value) VALUES ('auth_secret', ?)", [generated]);
+  await run("INSERT INTO settings (key, value) VALUES ('auth_secret', ?) ON CONFLICT (key) DO NOTHING", [generated]);
   const stored = await one<{ value: string }>("SELECT value FROM settings WHERE key = 'auth_secret'");
   return stored?.value ?? generated;
 }
