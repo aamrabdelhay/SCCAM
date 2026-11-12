@@ -1,17 +1,15 @@
 import Link from "next/link";
-import { ArrowUp, ArrowUpRight, BookOpen, FileText, Archive, ShieldCheck } from "lucide-react";
-import type { Lang, SectionRow, SettingsMap } from "@/lib/types";
+import { ArrowUp, ArrowUpRight, FileText, ShieldCheck } from "lucide-react";
+import type { Lang, SettingsMap } from "@/lib/types";
 import { t } from "@/lib/i18n";
 import { LogoMark } from "./Logo";
 
 export function SiteFooter({
   lang,
   settings,
-  sections,
 }: {
   lang: Lang;
   settings: SettingsMap;
-  sections: SectionRow[];
 }) {
   const year = new Date().getFullYear();
   const siteName = lang === "ar" ? settings.site_name_ar : settings.site_name_en;
