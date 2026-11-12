@@ -6,21 +6,27 @@
    Design tokens — change the brand here, everywhere follows.
    ============================================================ */
 :root {
-  --primary: #238b46;
-  --primary-soft: #e7f3e8;
-  --secondary: #0b527a;
-  --secondary-soft: #e8f2f8;
-  --accent: #f5a10b;
-  --bg: #fbfdfb;
-  --surface: #f0f6f1;
-  --text: #173b2a;
-  --muted: #5b7164;
-  --line: #dce8de;
+  /* Logo palette: palm green, warm sun, clear sky, deep sea and white. */
+  --primary: #27834f;
+  --primary-soft: #e6f3e9;
+  --accent: #f2a51a;
+  --accent-soft: #fff4db;
+  --secondary: #15385b;
+  --secondary-soft: #e8eff7;
+  --navy: #102b49;
+  --sky: #55b7e4;
+  --sky-soft: #e8f6fc;
+  --link: #176d98;
+  --bg: #ffffff;
+  --surface: #f1f8fb;
+  --text: #142f49;
+  --muted: #5c7082;
+  --line: #dbe7ef;
   --card: #ffffff;
-  --header: rgba(251, 253, 251, 0.94);
-  --mark: #ffe5ad;
+  --header: rgba(255, 255, 255, 0.96);
+  --mark: #ffe6ad;
   --danger: #b3261e;
-  --shadow-color: 35 139 70;
+  --shadow-color: 21 56 91;
 
   --font-sans: "Cairo Variable", "Cairo", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Cairo Variable", "Cairo", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
@@ -74,6 +80,21 @@ body {
   }
 }
 
+.brand-spectrum {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 27%, var(--sky) 62%, var(--navy) 100%);
+}
+.site-header {
+  position: relative;
+}
+.site-header::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--sky), var(--navy));
+  opacity: .72;
+}
 @layer components {
   .container-x {
     @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8;
@@ -91,7 +112,7 @@ body {
   }
   .card-hover:hover {
     transform: translateY(-2px);
-    box-shadow: 0 18px 40px -26px rgba(11, 61, 46, 0.45);
+    box-shadow: 0 18px 40px -26px rgba(16, 43, 73, 0.38);
     border-color: color-mix(in srgb, var(--primary) 22%, var(--line));
   }
 
@@ -121,7 +142,7 @@ body {
     color: var(--text);
   }
   .btn-outline:hover {
-    border-color: color-mix(in srgb, var(--primary) 40%, var(--line));
+    border-color: color-mix(in srgb, var(--sky) 65%, var(--line));
     background: var(--surface);
   }
   .btn-ghost {
@@ -146,7 +167,7 @@ body {
   }
   .chip:hover {
     color: var(--text);
-    border-color: color-mix(in srgb, var(--primary) 35%, var(--line));
+    border-color: color-mix(in srgb, var(--sky) 55%, var(--line));
   }
   .chip-active {
     background: var(--primary);
