@@ -104,6 +104,7 @@ export function FileCard({
 
 export function FileMiniCard({ file, lang }: { file: FileWithMeta; lang: Lang }) {
   const title = pickText(lang, file.title_ar, file.title_en);
+  const sectionColor = file.section_slug === "laws" ? "var(--secondary)" : file.section_slug === "books" ? "var(--accent)" : "var(--primary)";
   return (
     <Link href={`/file/${file.id}`} className="group flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-[var(--surface)]">
       <span
