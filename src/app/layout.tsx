@@ -67,7 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main id="main" className="min-h-[60vh] w-full flex-1">
           {children}
         </main>
-        <SiteFooter lang={lang} settings={settings} sections={sections} />
+        <SiteFooter lang={lang} settings={settings} />
         <ServiceWorkerRegister />
       </body>
     </html>
