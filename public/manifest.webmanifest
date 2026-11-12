@@ -1,0 +1,28 @@
+{
+  "name": "Arbitration Moot Library — unofficial",
+  "short_name": "Arb Library",
+  "description": "Unofficial community library for the international commercial arbitration moot: case file, clarifications, laws, rules and books.",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0B3D2E",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["education", "books", "reference"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "The Case", "url": "/case" },
+    { "name": "Laws & Rules", "url": "/laws" },
+    { "name": "Books", "url": "/books" },
+    { "name": "Search", "url": "/search" }
+  ]
+}
