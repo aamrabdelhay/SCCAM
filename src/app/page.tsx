@@ -44,7 +44,7 @@ export default async function HomePage() {
     <>
       <section className="relative overflow-hidden border-b border-[var(--line)]">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{
-          background: "radial-gradient(900px 380px at 85% -5%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%), radial-gradient(700px 300px at 5% 0%, color-mix(in srgb, var(--primary) 13%, transparent), transparent 70%)",
+          background: "radial-gradient(900px 380px at 85% -5%, color-mix(in srgb, var(--accent) 19%, transparent), transparent 70%), radial-gradient(700px 300px at 5% 0%, color-mix(in srgb, var(--primary) 13%, transparent), transparent 70%), radial-gradient(650px 280px at 58% 12%, color-mix(in srgb, var(--sky) 15%, transparent), transparent 72%)",
         }} />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-30" style={{
           backgroundImage: "linear-gradient(to right, var(--line) 1px, transparent 1px), linear-gradient(to bottom, var(--line) 1px, transparent 1px)",
