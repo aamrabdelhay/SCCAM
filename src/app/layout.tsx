@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: { index: true, follow: true },
     openGraph: {
       type: "website",
-      siteName: lang === "ar" ? settings.site_name_ar : settings.site_name_en,
+      siteName: "SCCAM",
       title,
       description,
       images: [{ url: "/og.png", width: 1200, height: 630, alt: title }],
