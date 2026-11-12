@@ -29,7 +29,7 @@ export default async function HomePage() {
     getPageCounts(),
     getFileCounts(),
     listFiles({ pinnedOnly: true, limit: 6 }),
-    listFiles({ limit: 500 }),
+    listFiles({ limit: 1000 }),
     getDeadlines(),
   ]);
   const Arrow = lang === "ar" ? ArrowLeft : ArrowRight;
@@ -38,7 +38,6 @@ export default async function HomePage() {
     .filter((file) => /(?:مذكر(?:ة|ات)|memorials?|memorand(?:um|a)|skeleton\s+argument)/i.test(
       [file.title_ar, file.title_en, file.description_ar, file.description_en, file.tags].join(" "),
     ))
-    .sort((a, b) => Number(b.pinned) - Number(a.pinned) || Number(b.views) - Number(a.views) || a.sort_order - b.sort_order)
     .slice(0, 6);
 
   return (
