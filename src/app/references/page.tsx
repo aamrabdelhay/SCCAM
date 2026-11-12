@@ -98,6 +98,13 @@ const referenceSources: Record<string, { label: string; url: string; note?: stri
   "p-0": [{ label: "فهرس جامعة الإمارات للطيران", url: "https://catalog.aue.ae/cgi-bin/koha/opac-detail.pl?biblionumber=25973", note: "السجل المتاح يذكر طبعة 1995؛ القائمة تذكر 2001." }],
   "p-3": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=135907&query_desc=" }],
   "p-5": [{ label: "فهرس مكتبة كلية الحقوق – جامعة القاهرة", url: "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-detail.pl?biblionumber=43321" }],
+  "a-10": [{ label: "فهرس المكتبة البرلمانية الجزائرية", url: "https://bibliotheque.apn.dz/index.php?id=97&lvl=etagere_see&nb_per_page_custom=25&nbr_lignes=530&page=14" }],
+  "a-11": [{ label: "فهرس المكتبة المركزية للجامعة الإسلامية", url: "https://iulibrary.com/" }],
+  "a-12": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=169226" }],
+  "a-20": [{ label: "فهرس جامعة سطيف 2", url: "https://cfdsp.univ-setif2.dz/opac_css/index.php?dcote=&id=27&lcote=0&location=9&lvl=section_see&main=&nb_per_page_custom=25&nbr_lignes=13310&nc=0&page=530&plettreaut=&ssub=0" }],
+  "a-22": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=135941" }],
+  "a-53": [{ label: "فهرس مكتبة CRCICA", url: "https://library.crcica.org/cgi-bin/koha/opac-detail.pl?biblionumber=3260" }],
+  "p-4": [{ label: "صفحة الناشر – دار النهضة العربية", url: "https://www.daralnahda.com/book/4072/%D9%85%D8%AF%D9%88%D9%86%D8%A9-%D8%A7%D8%A8%D8%AD%D8%A7%D8%AB-%D9%81%D9%8A-%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D8%A7%D9%84%D8%AE%D8%A7%D8%B5" }],
 };
 
 const privateInternationalLawReferences = [
