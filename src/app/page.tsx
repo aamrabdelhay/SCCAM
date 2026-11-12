@@ -204,12 +204,13 @@ export default async function HomePage() {
 
       <section aria-labelledby="tools-title" className="container-x mt-14">
         <div className="mb-5"><h2 id="tools-title" className="section-title">{lang === "ar" ? "أدوات ومصادر الباحث" : "Research tools and resources"}</h2></div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {[
-            { href: "/guidelines", title: lang === "ar" ? "الإرشادات" : "Guidelines", body: lang === "ar" ? "دليل عملي لاستخدام المكتبة والبحث القانوني." : "A practical guide to the library and legal research." },
+            { href: "/guidelines", title: lang === "ar" ? "الإرشادات" : "Guidelines", body: lang === "ar" ? "الملفات التي تضيفها من لوحة الإدارة." : "Files you add through the admin panel." },
             { href: "/research-platforms", title: lang === "ar" ? "منصات البحث" : "Research platforms", body: lang === "ar" ? "قواعد بيانات مجانية للسوابق والأحكام الدولية." : "Free databases for international cases and judgments." },
             { href: "/references", title: lang === "ar" ? "المراجع" : "References", body: lang === "ar" ? "مراجع متخصصة في التحكيم والقانون الدولي الخاص." : "Specialist references on arbitration and private international law." },
-            { href: "/memoranda", title: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", body: lang === "ar" ? "مذكرات المنافسة في مكان واحد." : "Competition memoranda in one place." },
+            { href: "/memoranda", title: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", body: lang === "ar" ? "المذكرات التي ترفعها من لوحة الإدارة." : "Memoranda you upload through the admin panel." },
+            { href: "/previous-editions", title: lang === "ar" ? "أرشيف الإصدارات السابقة" : "Previous editions", body: lang === "ar" ? "النسخ السابقة التي تضيفها للمكتبة." : "Previous versions you add to the library." },
           ].map((item) => (
             <Link key={item.href} href={item.href} className="card card-hover block p-5">
               <h3 className="text-[15px] font-bold text-[var(--primary)]">{item.title}</h3>
