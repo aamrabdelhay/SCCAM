@@ -31,7 +31,7 @@ function dbUrl(): string {
   } catch {
     /* ignore: serverless deployments use the configured remote database */
   }
-  return \`file:\${file}\`;
+  return "file:" + file;
 }
 
 /** Convert SQLite-style positional placeholders to PostgreSQL placeholders. */
@@ -89,7 +89,7 @@ function postgresSql(statement: string): string {
       continue;
     }
     if (char === "?" && !singleQuoted && !doubleQuoted) {
-      output += \`$\${++parameterIndex}\`;
+      output += "$" + (++parameterIndex);
       continue;
     }
     output += char;
@@ -202,7 +202,7 @@ export function newId(prefix = ""): string {
   const bytes = new Uint8Array(9);
   crypto.getRandomValues(bytes);
   const id = Array.from(bytes, (b) => b.toString(36).padStart(2, "0")).join("").slice(0, 14);
-  return prefix ? \`\${prefix}_\${id}\` : id;
+  return prefix ? prefix + "_" + id : id;
 }
 
 export function nowIso(): string {
