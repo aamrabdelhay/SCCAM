@@ -90,7 +90,7 @@ export async function SectionPage({
               className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border"
               style={{
                 background: `color-mix(in srgb, ${accent} 14%, var(--card))`,
-                color: section.accent,
+                color: accent,
                 borderColor: `color-mix(in srgb, ${accent} 25%, var(--line))`,
               }}
             >
