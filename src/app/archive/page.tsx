@@ -11,7 +11,8 @@ export const metadata = { title: "Archive" };
 
 export default async function ArchivePage() {
   const lang = await getLang();
-  const [files, sections] = await Promise.all([listFiles({ sort: "default", limit: 500 }), getSections()]);
+  const [allFiles, sections] = await Promise.all([listFiles({ sort: "default", limit: 1000 }), getSections()]);
+  const files = allFiles.filter((file) => Boolean(file.edition_year));
 
   const grouped = new Map<string, typeof files>();
   for (const f of files) {
@@ -26,9 +27,9 @@ export default async function ArchivePage() {
         <p className="eyebrow">{t(lang, "navArchive")}</p>
         <h1 className="font-display mt-2 flex items-center gap-2 text-[26px] font-extrabold sm:text-[32px]">
           <Archive className="h-7 w-7 text-[var(--accent)]" aria-hidden="true" />
-          {t(lang, "archiveTitle")}
+          {lang === "ar" ? "أرشيف الإصدارات السابقة" : "Previous editions archive"}
         </h1>
-        <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--muted)]">{t(lang, "archiveDesc")}</p>
+        <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--muted)]">{lang === "ar" ? "الملفات والإصدارات السابقة التي تضيفها من لوحة الإدارة، مرتبة حسب سنة الإصدار." : "Previous-edition files that you add through the admin panel, grouped by edition year."}</p>
       </div>
 
       <nav aria-label={t(lang, "previousEditions")} className="mt-5 flex flex-wrap gap-1.5">
@@ -58,8 +59,10 @@ export default async function ArchivePage() {
           </section>
         ))}
         {files.length === 0 && (
-          <div className="card flex items-center gap-2 p-6 text-[13px] text-[var(--muted)]">
-            <FileText className="h-4 w-4" /> {t(lang, "noDocuments")}
+          <div className="card p-8 text-center">
+            <FileText className="mx-auto h-8 w-8 text-[var(--sky)]" />
+            <p className="mt-3 text-[13px] font-semibold text-[var(--muted)]">{lang === "ar" ? "لم تضف إصدارات سابقة بعد." : "No previous editions have been added yet."}</p>
+            <Link href="/admin" className="btn btn-primary btn-sm mt-4">{lang === "ar" ? "إضافة الإصدارات من الإدارة" : "Add editions in admin"}</Link>
           </div>
         )}
       </div>
