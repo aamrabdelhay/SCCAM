@@ -10,12 +10,12 @@ export const metadata = { title: "Best Memoranda" };
 export default async function MemorandaPage() {
   const lang = await getLang();
   const ar = lang === "ar";
-  const files = await listFiles({ limit: 500 });
+  const files = await listFiles({ limit: 1000 });
   const memoranda = files
     .filter((file) => /(?:مذكر(?:ة|ات)|memorials?|memorand(?:um|a)|skeleton\s+argument)/i.test(
       [file.title_ar, file.title_en, file.description_ar, file.description_en, file.tags].join(" "),
     ))
-    .sort((a, b) => Number(b.pinned) - Number(a.pinned) || Number(b.views) - Number(a.views) || a.sort_order - b.sort_order);
+;
 
   return (
     <div className="container-x py-10">
