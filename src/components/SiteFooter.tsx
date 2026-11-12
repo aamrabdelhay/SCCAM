@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { Mail, Facebook, Instagram, Linkedin, ArrowUp, ShieldAlert } from "lucide-react";
+import { ArrowUp, ArrowUpRight, BookOpen, FileText, Archive, ShieldCheck } from "lucide-react";
 import type { Lang, SectionRow, SettingsMap } from "@/lib/types";
 import { t } from "@/lib/i18n";
 import { LogoMark } from "./Logo";
-import { WhatsAppIcon, XIcon } from "./BrandIcons";
 
 export function SiteFooter({
   lang,
@@ -16,118 +15,72 @@ export function SiteFooter({
 }) {
   const year = new Date().getFullYear();
   const siteName = lang === "ar" ? settings.site_name_ar : settings.site_name_en;
-  const notice = (lang === "ar" ? settings.notice_ar : settings.notice_en) || t(lang, "unofficialFooter");
+  const ar = lang === "ar";
 
-  const quick = [
+  const libraryLinks = [
     { href: "/case", label: t(lang, "navCase") },
     { href: "/laws", label: t(lang, "navLaws") },
     { href: "/books", label: t(lang, "navBooks") },
     { href: "/search", label: t(lang, "navSearch") },
-    { href: "/archive", label: t(lang, "navArchive") },
-    { href: "/contact", label: t(lang, "navContact") },
   ];
-
-  const resources = [
-    { href: "/clarifications", label: t(lang, "clarificationsTitle") },
-    { href: "/glossary", label: t(lang, "glossaryTitle") },
-    { href: "/changelog", label: t(lang, "changelogTitle") },
-    { href: "/library", label: t(lang, "navLibrary") },
-    { href: "/faq", label: t(lang, "faqTitle") },
+  const resourceLinks = [
+    { href: "/archive", label: ar ? "أرشيف الإصدارات السابقة" : "Previous editions" },
+    { href: "/memoranda", label: ar ? "أفضل المذكرات" : "Best memoranda" },
+    { href: "/guidelines", label: ar ? "الإرشادات" : "Guidelines" },
+    { href: "/research-platforms", label: ar ? "منصات البحث" : "Research platforms" },
+    { href: "/references", label: ar ? "المراجع" : "References" },
   ];
-
-  const socials = [
-    { kind: "x", href: settings.social_x },
-    { kind: "linkedin", href: settings.social_linkedin },
-    { kind: "whatsapp", href: settings.social_whatsapp },
-    { kind: "facebook", href: settings.social_facebook },
-    { kind: "instagram", href: settings.social_instagram },
-  ].filter((s) => s.href);
 
   return (
-    <footer className="no-print mt-20 border-t border-[var(--line)] bg-[var(--surface)]">
-      <div className="container-x py-12">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+    <footer className="site-footer no-print mt-16 border-t border-[var(--line)] bg-[var(--navy)] text-white">
+      <div className="brand-spectrum h-1 w-full" aria-hidden="true" />
+      <div className="container-x py-9 sm:py-11">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.35fr_1fr_1.15fr_auto] lg:gap-10">
           <div>
-            <div className="flex items-center gap-2.5">
-              <LogoMark className="h-9 w-9" />
+            <div className="flex items-center gap-3">
+              <span className="grid h-11 w-11 place-items-center rounded-xl bg-white/10 ring-1 ring-white/15">
+                <LogoMark className="h-8 w-8" />
+              </span>
               <span className="font-display text-[15px] font-extrabold">{siteName}</span>
             </div>
-            <p className="mt-4 max-w-sm text-[13px] leading-relaxed text-[var(--muted)]">
-              {lang === "ar" ? settings.tagline_ar : settings.tagline_en}
+            <p className="mt-4 max-w-sm text-[12.5px] leading-7 text-white/70">
+              {ar ? settings.tagline_ar : settings.tagline_en}
             </p>
-            <div className="mt-4 flex items-start gap-2 rounded-xl border border-[color-mix(in_srgb,var(--accent)_45%,var(--line))] bg-[color-mix(in_srgb,var(--accent)_10%,var(--bg))] p-3">
-              <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" aria-hidden="true" />
-              <p className="text-[11.5px] leading-relaxed text-[var(--text)]">{notice}</p>
-            </div>
-            <div className="mt-4 flex items-center gap-1">
-              {socials.map((s) => (
-                <a
-                  key={s.kind}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  aria-label={s.kind}
-                  className="grid h-9 w-9 place-items-center rounded-full border border-[var(--line)] bg-[var(--card)] text-[var(--muted)] transition-colors hover:text-[var(--primary)] dark:hover:text-[var(--accent)]"
-                >
-                  {s.kind === "x" && <XIcon className="h-3.5 w-3.5" />}
-                  {s.kind === "whatsapp" && <WhatsAppIcon className="h-4 w-4" />}
-                  {s.kind === "linkedin" && <Linkedin className="h-4 w-4" />}
-                  {s.kind === "facebook" && <Facebook className="h-4 w-4" />}
-                  {s.kind === "instagram" && <Instagram className="h-4 w-4" />}
-                </a>
-              ))}
-              {settings.contact_email && (
-                <a
-                  href={`mailto:${settings.contact_email}`}
-                  aria-label={t(lang, "footerContact")}
-                  className="grid h-9 w-9 place-items-center rounded-full border border-[var(--line)] bg-[var(--card)] text-[var(--muted)] hover:text-[var(--primary)] dark:hover:text-[var(--accent)]"
-                >
-                  <Mail className="h-4 w-4" />
-                </a>
-              )}
-            </div>
           </div>
 
-          <FooterCol title={t(lang, "footerQuickLinks")} links={quick} />
-          <FooterCol title={t(lang, "footerSections")} links={sections.map((s) => ({ href: `/${s.slug}`, label: lang === "ar" ? s.name_ar : s.name_en }))} />
-          <FooterCol title={t(lang, "footerResources")} links={resources} />
-        </div>
+          <FooterCol title={ar ? "أقسام المكتبة" : "Library"} links={libraryLinks} />
+          <FooterCol title={ar ? "موارد الباحث" : "Research resources"} links={resourceLinks} />
 
-        {settings.contact_email && (
-          <div className="mt-10 flex flex-wrap items-center gap-2 text-[12.5px] text-[var(--muted)]">
-            <Mail className="h-4 w-4" aria-hidden="true" />
-            <a href={`mailto:${settings.contact_email}`} className="link" dir="ltr">
-              {settings.contact_email}
-            </a>
-            <span className="mx-2 hidden h-3 w-px bg-[var(--line)] sm:block" />
-            <Link href="/contact" className="link">
-              {t(lang, "askAdmin")}
-            </Link>
-          </div>
-        )}
-      </div>
-
-      <div className="border-t border-[var(--line)]">
-        <div className="container-x flex flex-col items-center justify-between gap-3 py-5 text-[11.5px] text-[var(--muted)] sm:flex-row">
-          <p>
-            © {year} {siteName} · {t(lang, "footerRights")} {t(lang, "footerMadeBy")}
-          </p>
-          <div className="flex items-center gap-4">
-            <Link href="/changelog" className="hover:text-[var(--text)]">
-              {t(lang, "changelogTitle")}
-            </Link>
-            <a href="#main" className="inline-flex items-center gap-1 hover:text-[var(--text)]">
-              <ArrowUp className="h-3 w-3" aria-hidden="true" />
-              {t(lang, "backToTop")}
-            </a>
-            {/* Hidden in plain sight: the only admin entrance */}
+          <div className="rounded-2xl border border-white/15 bg-white/[0.06] p-4 sm:max-w-[230px]">
+            <div className="flex items-center gap-2 text-[13px] font-bold">
+              <ShieldCheck className="h-4 w-4 text-[var(--accent)]" aria-hidden="true" />
+              {ar ? "إدارة المكتبة" : "Library administration"}
+            </div>
+            <p className="mt-2 text-[11.5px] leading-6 text-white/65">
+              {ar ? "إدارة الملفات والإصدارات ومحتوى المكتبة." : "Manage files, editions and library content."}
+            </p>
             <Link
               href="/admin"
-              className="rounded px-1 text-[11px] tracking-wide text-[var(--muted)] opacity-60 transition-opacity hover:opacity-100"
-              aria-label={t(lang, "adminLink")}
-              title={t(lang, "adminLink")}
+              className="mt-4 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-4 py-2 text-[12.5px] font-extrabold text-[var(--navy)] transition-transform hover:-translate-y-0.5 hover:brightness-105"
             >
-              {t(lang, "adminLink")}
+              {ar ? "دخول الإدارة" : "Open admin"}
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10">
+        <div className="container-x flex flex-col items-center justify-between gap-3 py-4 text-[11px] text-white/60 sm:flex-row">
+          <p>© {year} {siteName} · {t(lang, "footerRights")}</p>
+          <div className="flex items-center gap-4">
+            <span className="hidden text-white/35 sm:inline">SCCAM Library</span>
+            <a href="#main" className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 transition-colors hover:bg-white/10 hover:text-white">
+              <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
+              {t(lang, "backToTop")}
+            </a>
+            <Link href="/admin" className="rounded-lg px-2 py-1 font-bold text-[var(--accent)] transition-colors hover:bg-white/10">
+              {ar ? "الإدارة" : "Admin"}
             </Link>
           </div>
         </div>
@@ -139,12 +92,12 @@ export function SiteFooter({
 function FooterCol({ title, links }: { title: string; links: { href: string; label: string }[] }) {
   return (
     <nav aria-label={title}>
-      <h2 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-[var(--text)]">{title}</h2>
-      <ul className="space-y-2">
-        {links.map((l) => (
-          <li key={l.href}>
-            <Link href={l.href} className="text-[13px] text-[var(--muted)] transition-colors hover:text-[var(--primary)] dark:hover:text-[var(--accent)]">
-              {l.label}
+      <h2 className="mb-3 text-[11px] font-extrabold uppercase tracking-wider text-[var(--sky)]">{title}</h2>
+      <ul className="space-y-2.5">
+        {links.map((link) => (
+          <li key={link.href}>
+            <Link href={link.href} className="text-[12.5px] text-white/75 transition-colors hover:text-[var(--accent)]">
+              {link.label}
             </Link>
           </li>
         ))}
