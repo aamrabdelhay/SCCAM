@@ -162,9 +162,11 @@ export default async function HomePage() {
               <Link href="/search?sort=views" className="text-[12.5px] font-semibold link">{t(lang, "searchGlobal")}</Link>
             </div>
             <div className="grid gap-1 p-2 sm:grid-cols-2 lg:grid-cols-3">
-              {pinned.map((file) => (
+              {pinned.map((file) => {
+                const sectionColor = file.section_slug === "laws" ? "var(--secondary)" : file.section_slug === "books" ? "var(--accent)" : "var(--primary)";
+                return (
                 <Link key={file.id} href={"/file/" + file.id} className="group flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-[var(--surface)]">
-                  <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[12px] font-extrabold" style={{ background: "color-mix(in srgb, " + file.section_accent + " 14%, transparent)", color: file.section_accent }}>
+                  <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[12px] font-extrabold" style={{ background: "color-mix(in srgb, " + sectionColor + " 14%, transparent)", color: sectionColor }}>
                     {formatNumber(file.page_count, lang)}
                   </span>
                   <span className="min-w-0">
@@ -175,7 +177,8 @@ export default async function HomePage() {
                     </span>
                   </span>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
