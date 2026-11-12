@@ -89,11 +89,32 @@ const referenceSources: Record<number, { url: string; labelAr: string; labelEn: 
       "labelEn": "Google Books record"
     }
   ],
+  "2": [
+    {
+      "url": "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-MARCdetail.pl?biblionumber=27989",
+      "labelAr": "فهرس مكتبة حقوق القاهرة",
+      "labelEn": "Cairo University Law Library record",
+      "noteAr": "السجل يذكر سنة 1984، بينما القائمة المقدمة تذكر 1998؛ تحقّق من الطبعة المقصودة.",
+      "noteEn": "This catalogue record lists 1984, while the supplied bibliography says 1998; verify the intended edition."
+    },
+    {
+      "url": "https://library.univ-alger3.dz/bib/36544",
+      "labelAr": "فهرس جامعة الجزائر 3",
+      "labelEn": "University of Algiers 3 catalogue",
+      "noteAr": "هذا السجل يثبت العنوان والمؤلفة، لكنه يسجل بيانات نشر أقدم (1973).",
+      "noteEn": "This record confirms the title and author but lists an earlier publication record (1973)."
+    }
+  ],
   "3": [
     {
       "url": "https://books.google.com/books?id=u-LtQwAACAAJ",
       "labelAr": "بيانات Google Books",
       "labelEn": "Google Books record"
+    },
+    {
+      "url": "https://fac.umc.edu.dz/droit/bib/pagesbib/livre.php?id_livre=8096",
+      "labelAr": "فهرس جامعة قسنطينة – 2007",
+      "labelEn": "Constantine University catalogue – 2007"
     }
   ],
   "4": [
@@ -104,6 +125,11 @@ const referenceSources: Record<number, { url: string; labelAr: string; labelEn: 
     }
   ],
   "5": [
+    {
+      "url": "https://library.crcica.org/bib/3304",
+      "labelAr": "فهرس مكتبة مركز القاهرة الإقليمي للتحكيم التجاري الدولي",
+      "labelEn": "CRCICA Library catalogue"
+    },
     {
       "url": "https://pmb.univ-batna.dz/opac_bcu/index.php?id=36353&lvl=notice_display",
       "labelAr": "فهرس جامعة باتنة",
@@ -226,11 +252,32 @@ const referenceSources: Record<number, { url: string; labelAr: string; labelEn: 
       "noteEn": "This record is for an expanded title and 2011 edition; verify the edition."
     }
   ],
+  "61": [
+    {
+      "url": "https://sqaps.edu.om/lms/search/standard/results/opac?searchKeyword%5B0%5D=%D9%87%D8%B4%D8%A7%D9%85+%D8%B9%D9%84%D9%8A+%D8%B5%D8%A7%D8%AF%D9%82&searchTarget%5B0%5D=TENxdWM5WCtEdFpnTkNuUlRyS0lZQT09&targetAllBranches=on",
+      "labelAr": "فهرس أكاديمية السلطان قابوس لعلوم الشرطة",
+      "labelEn": "Sultan Qaboos Academy Library catalogue",
+      "noteAr": "السجل يعرض طبعة ثانية سنة 2001، وهو قريب من بيانات المرجع الواردة في القائمة.",
+      "noteEn": "This catalogue lists a second edition from 2001, close to the supplied bibliography."
+    },
+    {
+      "url": "https://catalog.aue.ae/cgi-bin/koha/opac-detail.pl?biblionumber=25973",
+      "labelAr": "فهرس مكتبة جامعة أبوظبي – طبعة 1995",
+      "labelEn": "Abu Dhabi University catalogue – 1995 edition"
+    }
+  ],
   "62": [
     {
       "url": "https://library.cco.gov.jo/cgi-bin/koha/opac-detail.pl?biblionumber=2085",
       "labelAr": "فهرس مكتبة المحكمة الدستورية الأردنية",
-      "labelEn": "Jordan Constitutional Court Library catalogue"
+      "labelEn": "Jordan Constitutional Court Library catalogue",
+      "noteAr": "السجل يذكر نشر 2010، بينما القائمة المقدمة تذكر 2012. توجد أيضًا نسخة/طبعة مسجلة لدى المحكمة العليا الجزائرية سنة 2005؛ تحقّق من الطبعة قبل الاستشهاد.",
+      "noteEn": "The Jordanian catalogue lists 2010, while the supplied list says 2012. The Algerian Supreme Court also lists a 2005 edition; verify the edition before citing."
+    },
+    {
+      "url": "https://coursupreme.dz/book/%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D8%A7%D9%84%D8%AE%D8%A7%D8%B5-%D8%AA%D9%86%D8%A7%D8%B2%D8%B9-%D8%A7%D9%84%D9%82%D9%88%D8%A7%D9%86%D9%8A%D9%86/",
+      "labelAr": "فهرس المحكمة العليا الجزائرية",
+      "labelEn": "Algerian Supreme Court Library catalogue"
     },
     {
       "url": "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-detail.pl?biblionumber=38326",
