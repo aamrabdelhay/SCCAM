@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Archive, FileText, LockKeyhole } from "lucide-react";
+import { Archive, FileText } from "lucide-react";
 import { getLang } from "@/lib/server-lang";
 import { listFiles } from "@/lib/queries";
 import { FileCard } from "@/components/FileCard";
@@ -28,8 +27,8 @@ export default async function PreviousEditionsPage() {
           </h1>
           <p className="mt-3 text-[13.5px] leading-8 text-[var(--muted)]">
             {ar
-              ? "مكان مخصص للإصدارات والنسخ السابقة التي تضيفها من لوحة الإدارة. لا تتم إضافة ملفات أو أمثلة تلقائيًا."
-              : "A dedicated place for previous editions and versions that you add through the admin panel. No files or examples are inserted automatically."}
+              ? "نسخ وإصدارات سابقة من مواد المكتبة، مع الحفاظ على بيانات كل إصدار."
+              : "Earlier editions and versions of library materials, with their original records preserved."}
           </p>
         </div>
         <span className="rounded-full border border-[var(--line)] bg-[var(--card)] px-3 py-1.5 text-[12px] font-bold text-[var(--muted)]">
@@ -46,15 +45,10 @@ export default async function PreviousEditionsPage() {
           <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[var(--secondary-soft)] text-[var(--brand-navy)]">
             <FileText className="h-7 w-7" aria-hidden="true" />
           </span>
-          <h2 className="mt-4 text-[16px] font-extrabold">{ar ? "الأرشيف جاهز لاستقبال الإصدارات" : "The archive is ready for previous editions"}</h2>
+          <h2 className="mt-4 text-[16px] font-extrabold">{ar ? "لا توجد إصدارات سابقة منشورة حاليًا" : "No previous editions are currently published"}</h2>
           <p className="mt-2 max-w-xl text-[13px] leading-8 text-[var(--muted)]">
-            {ar
-              ? "أضف الملفات من لوحة الإدارة، واكتب «الإصدارات السابقة» أو «نسخة سابقة» في العنوان أو الوسوم حتى تظهر هنا تلقائيًا."
-              : "Add files through the admin panel and include “Previous editions” in the title or tags so they appear here automatically."}
+            {ar ? "ستظهر الإصدارات السابقة هنا عند توفرها." : "Previous editions will appear here when available."}
           </p>
-          <Link href="/admin" className="btn btn-primary mt-5">
-            <LockKeyhole className="h-4 w-4" aria-hidden="true" />{ar ? "إضافة ملفات من لوحة الإدارة" : "Add files in admin"}
-          </Link>
         </div>
       )}
     </div>

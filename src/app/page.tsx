@@ -3,18 +3,17 @@ import {
   ArrowLeft,
   ArrowRight,
   BookOpen,
-  Clock3,
   Files,
   Library,
   Scale,
   Sparkles,
 } from "lucide-react";
 import { getLang } from "@/lib/server-lang";
-import { getDeadlines, getFileCounts, getPageCounts, getSections, listFiles } from "@/lib/queries";
+import { getFileCounts, getPageCounts, getSections, getSiteSettings, listFiles } from "@/lib/queries";
 import { formatNumber, pickText, filesLabel } from "@/lib/format";
 import { SearchBox } from "@/components/SearchBox";
 import { FileCard } from "@/components/FileCard";
-import { Countdown } from "@/components/Countdown";
+import { SubmissionCountdown } from "@/components/SubmissionCountdown";
 import { ImportanceBadge } from "@/components/Badges";
 import { t } from "@/lib/i18n";
 
@@ -24,16 +23,15 @@ const SECTION_ICONS: Record<string, typeof Scale> = { case: Scale, laws: BookOpe
 
 export default async function HomePage() {
   const lang = await getLang();
-  const [sections, counts, fileCounts, pinned, allFiles, deadlines] = await Promise.all([
+  const [sections, counts, fileCounts, pinned, allFiles, settings] = await Promise.all([
     getSections(),
     getPageCounts(),
     getFileCounts(),
     listFiles({ pinnedOnly: true, limit: 6 }),
     listFiles({ limit: 1000 }),
-    getDeadlines(),
+    getSiteSettings(),
   ]);
   const Arrow = lang === "ar" ? ArrowLeft : ArrowRight;
-  const upcoming = deadlines.filter((d) => new Date(d.due_at).getTime() > Date.now() - 86400000).slice(0, 3);
   const bestMemos = allFiles
     .filter((file) => /(?:مذكر(?:ة|ات)|memorials?|memorand(?:um|a)|skeleton\s+argument)/i.test(
       [file.title_ar, file.title_en, file.description_ar, file.description_en, file.tags].join(" "),
@@ -42,7 +40,8 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-[var(--line)]">
+      <SubmissionCountdown lang={lang} settings={settings} />
+      <section className="relative mt-4 overflow-hidden border-b border-[var(--line)]">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{
           background: "radial-gradient(900px 380px at 88% -8%, color-mix(in srgb, var(--brand-blue) 20%, transparent), transparent 70%), radial-gradient(720px 340px at 5% 0%, color-mix(in srgb, var(--brand-green) 17%, transparent), transparent 70%), radial-gradient(520px 300px at 50% 16%, color-mix(in srgb, var(--brand-yellow) 15%, transparent), transparent 70%), radial-gradient(440px 280px at 100% 78%, color-mix(in srgb, var(--brand-orange) 11%, transparent), transparent 70%)",
         }} />
@@ -54,17 +53,13 @@ export default async function HomePage() {
         }} />
         <div className="container-x relative grid gap-10 py-14 lg:grid-cols-[1.15fr_0.85fr] lg:py-20">
           <div className="animate-fade-up">
-            <p className="eyebrow flex items-center gap-2">
-              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-              {t(lang, "heroEyebrow")}
-            </p>
-            <h1 className="font-display mt-3 max-w-2xl text-[32px] font-extrabold leading-[1.15] tracking-tight sm:text-[42px] lg:text-[48px]">
-              {lang === "ar" ? "مكتبتك القانونية للبحث والتحكيم الدولي" : "Your legal research library for international arbitration"}
+            <h1 className="font-display max-w-2xl text-[32px] font-extrabold leading-[1.15] tracking-tight sm:text-[42px] lg:text-[48px]">
+              {lang === "ar" ? "مكتبتك للبحث القانوني" : "Your legal research library"}
             </h1>
             <p className="mt-4 max-w-xl text-[14.5px] leading-relaxed text-[var(--muted)] sm:text-base">
               {lang === "ar"
-                ? "ملف القضية، القوانين، المذكرات، السوابق القضائية والمراجع المتخصصة في مساحة واحدة."
-                : "Case materials, laws, memoranda, case law and specialist references in one place."}
+                ? "ملف القضية والقوانين والكتب والمراجع والأحكام المنشورة في مساحة واحدة."
+                : "Case materials, laws, books, references and published judgments in one place."}
             </p>
             <div className="mt-7 max-w-2xl">
               <SearchBox lang={lang} size="lg" />
@@ -73,8 +68,8 @@ export default async function HomePage() {
               <Link href="/case" className="btn btn-primary">
                 {lang === "ar" ? "تصفح ملف القضية" : "Browse the case file"} <Arrow className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <Link href="/guidelines" className="btn btn-outline">
-                {lang === "ar" ? "دليل الاستخدام" : "Research guide"}
+              <Link href="/references" className="btn btn-outline">
+                {lang === "ar" ? "تصفح المراجع" : "Browse references"}
               </Link>
             </div>
             <dl className="mt-8 grid max-w-lg grid-cols-3 gap-3">
@@ -202,15 +197,15 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section aria-labelledby="tools-title" className="container-x mt-14">
+      <section aria-labelledby="tools-title" className="container-x mb-14 mt-14">
         <div className="mb-5"><h2 id="tools-title" className="section-title">{lang === "ar" ? "أدوات ومصادر الباحث" : "Research tools and resources"}</h2></div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {[
-            { href: "/guidelines", title: lang === "ar" ? "الإرشادات" : "Guidelines", body: lang === "ar" ? "الملفات التي تضيفها من لوحة الإدارة." : "Files you add through the admin panel." },
+            { href: "/guidelines", title: lang === "ar" ? "الإرشادات" : "Guidelines", body: lang === "ar" ? "إرشادات البحث واستخدام موارد المكتبة." : "Guidance for using the library and researching its materials." },
             { href: "/research-platforms", title: lang === "ar" ? "منصات البحث" : "Research platforms", body: lang === "ar" ? "قواعد بيانات مجانية للسوابق والأحكام الدولية." : "Free databases for international cases and judgments." },
             { href: "/references", title: lang === "ar" ? "المراجع" : "References", body: lang === "ar" ? "مراجع متخصصة في التحكيم والقانون الدولي الخاص." : "Specialist references on arbitration and private international law." },
-            { href: "/memoranda", title: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", body: lang === "ar" ? "المذكرات التي ترفعها من لوحة الإدارة." : "Memoranda you upload through the admin panel." },
-            { href: "/previous-editions", title: lang === "ar" ? "أرشيف الإصدارات السابقة" : "Previous editions", body: lang === "ar" ? "النسخ السابقة التي تضيفها للمكتبة." : "Previous versions you add to the library." },
+            { href: "/memoranda", title: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", body: lang === "ar" ? "مذكرات ومرافعات منشورة للمراجعة والبحث." : "Published memoranda and written submissions for research." },
+            { href: "/previous-editions", title: lang === "ar" ? "أرشيف الإصدارات السابقة" : "Previous editions", body: lang === "ar" ? "نسخ وإصدارات سابقة من مواد المكتبة." : "Earlier editions and versions of library materials." },
           ].map((item) => (
             <Link key={item.href} href={item.href} className="card card-hover block p-5">
               <h3 className="text-[15px] font-bold text-[var(--primary)]">{item.title}</h3>
@@ -221,19 +216,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {upcoming.length > 0 && (
-        <section className="container-x mt-14 mb-16">
-          <div className="mb-4">
-            <h2 className="section-title flex items-center gap-2"><Clock3 className="h-5 w-5 text-[var(--accent)]" aria-hidden="true" />{t(lang, "deadlinesTitle")}</h2>
-            <p className="mt-1 text-[13px] text-[var(--muted)]">{t(lang, "deadlinesSubtitle")}</p>
-          </div>
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {upcoming.map((deadline) => (
-              <Countdown key={deadline.id} id={deadline.id} dueAt={deadline.due_at} title={pickText(lang, deadline.title_ar, deadline.title_en)} note={pickText(lang, deadline.note_ar, deadline.note_en)} kind={deadline.kind} lang={lang} />
-            ))}
-          </div>
-        </section>
-      )}
+
     </>
   );
 }

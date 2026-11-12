@@ -17,6 +17,8 @@ import {
   FileText,
   Compass,
   Globe,
+  Bookmark,
+  Layers,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { SearchBox } from "@/components/SearchBox";
@@ -44,7 +46,9 @@ export function HeaderClient({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
+  const [sectionsOpen, setSectionsOpen] = useState(false);
   const archiveRef = useRef<HTMLDivElement>(null);
+  const sectionsRef = useRef<HTMLDivElement>(null);
   const searchWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,6 +62,7 @@ export function HeaderClient({
     setMobileOpen(false);
     setSearchOpen(false);
     setArchiveOpen(false);
+    setSectionsOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -72,6 +77,7 @@ export function HeaderClient({
       if (e.key === "Escape") {
         setSearchOpen(false);
         setArchiveOpen(false);
+        setSectionsOpen(false);
         setMobileOpen(false);
       }
     };
@@ -82,6 +88,7 @@ export function HeaderClient({
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (archiveRef.current && !archiveRef.current.contains(e.target as Node)) setArchiveOpen(false);
+      if (sectionsRef.current && !sectionsRef.current.contains(e.target as Node)) setSectionsOpen(false);
       if (searchWrapRef.current && !searchWrapRef.current.contains(e.target as Node) && !searchOpen) {
         /* noop */
       }
@@ -95,15 +102,15 @@ export function HeaderClient({
     { href: "/case", label: t(lang, "navCase") },
     { href: "/laws", label: t(lang, "navLaws") },
     { href: "/books", label: t(lang, "navBooks") },
-    { href: "/search", label: t(lang, "navSearch") },
   ];
 
   const archiveLinks = [
     { href: "/previous-editions", label: lang === "ar" ? "أرشيف الإصدارات السابقة" : "Previous editions", icon: Archive },
     { href: "/memoranda", label: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", icon: FileText },
+    { href: "/references", label: lang === "ar" ? "المراجع" : "References", icon: BookOpen },
+    { href: "/library", label: t(lang, "navLibrary"), icon: Bookmark },
     { href: "/guidelines", label: lang === "ar" ? "الإرشادات" : "Guidelines", icon: Compass },
     { href: "/research-platforms", label: lang === "ar" ? "منصات البحث" : "Research platforms", icon: Globe },
-    { href: "/references", label: lang === "ar" ? "المراجع" : "References", icon: BookOpen },
   ];
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
@@ -150,28 +157,39 @@ export function HeaderClient({
             </Link>
           ))}
 
+          <div className="relative" ref={sectionsRef}>
+            <button type="button" onClick={() => setSectionsOpen((v) => !v)} aria-expanded={sectionsOpen} aria-haspopup="true"
+              className={cn("flex items-center gap-1 rounded-lg px-2 py-2 text-[13px] font-semibold transition-colors", sectionsOpen ? "text-[var(--primary)]" : "text-[var(--muted)] hover:text-[var(--text)]")}>
+              {lang === "ar" ? "الأقسام" : "Sections"}
+              <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", sectionsOpen && "rotate-180")} />
+            </button>
+            {sectionsOpen && (
+              <div className="absolute z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--card)] p-1.5 shadow-xl">
+                {sections.map((section) => (
+                  <Link key={section.slug} href={"/" + section.slug} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-medium text-[var(--text)] hover:bg-[var(--surface)]">
+                    <Layers className="h-4 w-4 text-[var(--muted)]" aria-hidden="true" />
+                    {section.name}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <Link href="/archive" aria-current={isActive("/archive") ? "page" : undefined}
+            className={cn("rounded-lg px-2 py-2 text-[13px] font-semibold transition-colors", isActive("/archive") ? "text-[var(--primary)]" : "text-[var(--muted)] hover:text-[var(--text)]")}>
+            {t(lang, "navArchive")}
+          </Link>
+
           <div className="relative" ref={archiveRef}>
-            <button
-              type="button"
-              onClick={() => setArchiveOpen((v) => !v)}
-              aria-expanded={archiveOpen}
-              aria-haspopup="true"
-              className={cn(
-                "flex items-center gap-1 rounded-lg px-3 py-2 text-[13.5px] font-semibold transition-colors",
-                archiveOpen ? "text-[var(--primary)] dark:text-[var(--accent)]" : "text-[var(--muted)] hover:text-[var(--text)]",
-              )}
-            >
-              {lang === "ar" ? "موارد الباحث" : "Research resources"}
+            <button type="button" onClick={() => setArchiveOpen((v) => !v)} aria-expanded={archiveOpen} aria-haspopup="true"
+              className={cn("flex items-center gap-1 rounded-lg px-2 py-2 text-[13px] font-semibold transition-colors", archiveOpen ? "text-[var(--primary)]" : "text-[var(--muted)] hover:text-[var(--text)]")}>
+              {lang === "ar" ? "أدوات ومراجع" : "Research resources"}
               <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", archiveOpen && "rotate-180")} />
             </button>
             {archiveOpen && (
-              <div className="absolute z-50 mt-2 w-60 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--card)] p-1.5 shadow-xl">
+              <div className="absolute end-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--card)] p-1.5 shadow-xl">
                 {archiveLinks.map((l) => (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium text-[var(--text)] hover:bg-[var(--surface)]"
-                  >
+                  <Link key={l.href} href={l.href} className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium text-[var(--text)] hover:bg-[var(--surface)]">
                     <l.icon className="h-4 w-4 text-[var(--muted)]" aria-hidden="true" />
                     {l.label}
                   </Link>
@@ -180,21 +198,10 @@ export function HeaderClient({
             )}
           </div>
 
-          {nav.slice(4).map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={isActive(item.href) ? "page" : undefined}
-              className={cn(
-                "rounded-lg px-3 py-2 text-[13.5px] font-semibold transition-colors",
-                isActive(item.href)
-                  ? "text-[var(--primary)] dark:text-[var(--accent)]"
-                  : "text-[var(--muted)] hover:text-[var(--text)]",
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
+          <Link href="/search" aria-current={isActive("/search") ? "page" : undefined}
+            className={cn("rounded-lg px-2 py-2 text-[13px] font-semibold transition-colors", isActive("/search") ? "text-[var(--primary)]" : "text-[var(--muted)] hover:text-[var(--text)]")}>
+            {t(lang, "navSearch")}
+          </Link>
         </nav>
 
         <div className="ms-auto flex items-center gap-1.5">
@@ -266,8 +273,10 @@ export function HeaderClient({
                 {item.href === "/case" && <FileText className="h-4 w-4 opacity-40" />}
               </Link>
             ))}
+            <Link href="/archive" className="rounded-xl px-3 py-2.5 text-[13px] font-medium text-[var(--muted)]">{t(lang, "navArchive")}</Link>
+            <Link href="/search" className="rounded-xl px-3 py-2.5 text-[13px] font-medium text-[var(--muted)]">{t(lang, "navSearch")}</Link>
             <div className="my-2 h-px bg-[var(--line)]" />
-            {sections.filter((s) => !["case", "laws", "books"].includes(s.slug)).map((s) => (
+            {sections.map((s) => (
               <Link
                 key={s.slug}
                 href={`/${s.slug}`}
@@ -277,6 +286,7 @@ export function HeaderClient({
               </Link>
             ))}
             <div className="my-2 h-px bg-[var(--line)]" />
+            <p className="px-3 pb-1 pt-2 text-[11px] font-bold text-[var(--accent)]">{lang === "ar" ? "أدوات ومراجع" : "Research resources"}</p>
             <div className="grid grid-cols-2 gap-1">
               {archiveLinks.map((l) => (
                 <Link

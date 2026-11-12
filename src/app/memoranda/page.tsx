@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { FileText, LockKeyhole, SearchCheck } from "lucide-react";
+import { FileText, SearchCheck } from "lucide-react";
 import { getLang } from "@/lib/server-lang";
 import { listFiles } from "@/lib/queries";
 import { FileCard } from "@/components/FileCard";
@@ -21,7 +20,7 @@ export default async function MemorandaPage() {
     <div className="container-x py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-3xl">
-          <p className="eyebrow">{ar ? "مواد المنافسة" : "Competition materials"}</p>
+          <p className="eyebrow">{ar ? "مكتبة المذكرات" : "Memoranda library"}</p>
           <h1 className="font-display mt-2 flex items-center gap-2 text-[28px] font-extrabold sm:text-[36px]">
             <FileText className="h-7 w-7 text-[var(--accent)]" aria-hidden="true" />
             {ar ? "أفضل المذكرات" : "Best memoranda"}
@@ -46,11 +45,8 @@ export default async function MemorandaPage() {
           <SearchCheck className="mx-auto h-9 w-9 text-[var(--primary)]" aria-hidden="true" />
           <h2 className="mt-3 text-[16px] font-extrabold">{ar ? "لا توجد مذكرات مطابقة حتى الآن" : "No matching memoranda yet"}</h2>
           <p className="mx-auto mt-2 max-w-xl text-[13px] leading-7 text-[var(--muted)]">
-            {ar
-              ? "سيظهر أي ملف منشور يحمل في عنوانه أو وصفه كلمات مثل «مذكرة» أو Memorial أو Memorandum هنا تلقائيًا. يمكن الوصول إلى بقية المستندات من أقسام المكتبة."
-              : "Published files whose title or description identifies them as a memorial or memorandum will appear here automatically. Other documents remain available in the library sections."}
+            {ar ? "لا توجد مذكرات منشورة في هذا القسم حاليًا." : "There are no published memoranda in this section yet."}
           </p>
-          <Link href="/admin" className="btn btn-primary mt-5"><LockKeyhole className="h-4 w-4" aria-hidden="true" />{ar ? "إضافة مذكرات من لوحة الإدارة" : "Add memoranda in admin"}</Link>
         </div>
       )}
     </div>

@@ -7,6 +7,7 @@ import { t } from "@/lib/i18n";
 import type { Lang } from "@/lib/types";
 import { csrfToken } from "@/lib/admin-client";
 import { cn } from "@/lib/format";
+import { AdminSelect } from "./AdminSelect";
 
 type SectionOpt = { id: string; name: string; categories: { id: string; name: string }[] };
 
@@ -40,7 +41,6 @@ export function UploadPanel({
   const [importance, setImportance] = useState("reference");
   const [editionYear, setEditionYear] = useState("");
   const [visibility, setVisibility] = useState("published");
-  const [titleFromFile, setTitleFromFile] = useState(true);
 
   const activeSection = sections.find((s) => s.id === sectionId);
 
@@ -128,20 +128,11 @@ export function UploadPanel({
       <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <label className="label" htmlFor="upload-section">{t(lang, "section")}</label>
-          <select id="upload-section" value={sectionId} onChange={(e) => { setSectionId(e.target.value); setCategoryId(""); }} className="field">
-            {sections.map((s) => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
+          <AdminSelect id="upload-section" value={sectionId} options={sections.map((section) => ({ value: section.id, label: section.name }))} placeholder="اختر القسم" onChange={(value) => { setSectionId(value); setCategoryId(""); }} />
         </div>
         <div>
           <label className="label" htmlFor="upload-category">{t(lang, "subCategory")}</label>
-          <select id="upload-category" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="field">
-            <option value="">—</option>
-            {(activeSection?.categories ?? []).map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
+          <AdminSelect id="upload-category" value={categoryId} options={(activeSection?.categories ?? []).map((category) => ({ value: category.id, label: category.name }))} placeholder="بدون تصنيف" onChange={setCategoryId} />
         </div>
         <div>
           <label className="label" htmlFor="upload-importance">{t(lang, "importance")}</label>
@@ -163,11 +154,7 @@ export function UploadPanel({
           <option value="hidden">{t(lang, "hidden")}</option>
           <option value="scheduled">{t(lang, "scheduled")}</option>
         </select>
-        {" · "}
-        <label className="inline-flex items-center gap-1">
-          <input type="checkbox" checked={titleFromFile} onChange={(e) => setTitleFromFile(e.target.checked)} className="accent-[var(--primary)]" />
-          {lang === "ar" ? "العنوان من اسم الملف" : "Title from filename"}
-        </label>
+
       </p>
 
       <div
@@ -208,7 +195,6 @@ export function UploadPanel({
           }}
         />
       </div>
-      {/* silence unused flag warning while keeping the UI predictable */}
 
       {jobs.length > 0 && (
         <ul className="mt-3 space-y-2">

@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Compass, FileText, LockKeyhole } from "lucide-react";
+import { Compass, FileText } from "lucide-react";
 import { getLang } from "@/lib/server-lang";
 import { listFiles } from "@/lib/queries";
 import { FileCard } from "@/components/FileCard";
@@ -28,8 +27,8 @@ export default async function GuidelinesPage() {
           </h1>
           <p className="mt-3 text-[13.5px] leading-8 text-[var(--muted)]">
             {ar
-              ? "هذا القسم مخصص للملفات التي تضيفها أنت من لوحة الإدارة. لا توجد مواد افتراضية أو ملفات تجريبية."
-              : "This section is reserved for files you add through the admin panel. No sample or pre-filled documents are included."}
+              ? "إرشادات ومواد عملية تساعد على استخدام المكتبة والبحث في مصادرها."
+              : "Practical guidance for using the library and researching its sources."}
           </p>
         </div>
         <span className="rounded-full border border-[var(--line)] bg-[var(--card)] px-3 py-1.5 text-[12px] font-bold text-[var(--muted)]">
@@ -46,15 +45,10 @@ export default async function GuidelinesPage() {
           <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[var(--primary-soft)] text-[var(--primary)]">
             <FileText className="h-7 w-7" aria-hidden="true" />
           </span>
-          <h2 className="mt-4 text-[16px] font-extrabold">{ar ? "القسم جاهز لاستقبال ملفاتك" : "This section is ready for your files"}</h2>
+          <h2 className="mt-4 text-[16px] font-extrabold">{ar ? "لا توجد إرشادات منشورة حاليًا" : "No guidelines are currently published"}</h2>
           <p className="mt-2 max-w-xl text-[13px] leading-8 text-[var(--muted)]">
-            {ar
-              ? "ارفع ملفات الإرشادات من لوحة الإدارة، وأضف كلمة «إرشادات» في العنوان أو الوسوم حتى تظهر هنا تلقائيًا."
-              : "Upload your guidance documents through the admin panel and include “Guidelines” in the title or tags so they appear here automatically."}
+            {ar ? "ستظهر الإرشادات هنا عند توفرها." : "Guidance materials will appear here when available."}
           </p>
-          <Link href="/admin" className="btn btn-primary mt-5">
-            <LockKeyhole className="h-4 w-4" aria-hidden="true" />{ar ? "إضافة ملفات من لوحة الإدارة" : "Add files in admin"}
-          </Link>
         </div>
       )}
     </div>

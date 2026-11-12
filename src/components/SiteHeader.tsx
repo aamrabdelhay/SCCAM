@@ -22,7 +22,7 @@ export async function SiteHeader({
   return (
     <HeaderClient
       lang={lang}
-      siteName={lang === "ar" ? settings.site_name_ar : settings.site_name_en}
+      siteName="SCCAM"
       socials={socials}
       sections={sections.map((s) => ({ slug: s.slug, name: lang === "ar" ? s.name_ar : s.name_en }))}
     />

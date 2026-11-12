@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Save, Loader2, KeyRound, Download, Palette, Globe, Megaphone, Share2 } from "lucide-react";
+import { Save, Loader2, KeyRound, Download, Palette, Globe, Megaphone, Share2, Clock3 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import type { Lang, SettingsMap } from "@/lib/types";
 import { adminJson, adminFetch } from "@/lib/admin-client";
@@ -57,6 +57,38 @@ export function SettingsForm({ lang, settings }: { lang: Lang; settings: Setting
     </div>
   );
 
+
+  const cairoDateTimeValue = (value: string | undefined) => {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Africa/Cairo",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    }).formatToParts(date);
+    const part = (type: string) => parts.find((item) => item.type === type)?.value ?? "";
+    return part("year") + "-" + part("month") + "-" + part("day") + "T" + part("hour") + ":" + part("minute");
+  };
+
+  const timerDateField = (key: string, label: string) => (
+    <div>
+      <label className="label" htmlFor={"s-" + key}>{label}</label>
+      <input
+        id={"s-" + key}
+        name={"settings." + key}
+        type="datetime-local"
+        defaultValue={cairoDateTimeValue(settings[key])}
+        className="field text-[12.5px]"
+        dir="ltr"
+      />
+    </div>
+  );
+
   return (
     <div className="space-y-4">
       {message && <p className="rounded-lg bg-[var(--surface)] px-3 py-2 text-[12px] font-semibold text-[var(--muted)]">{message}</p>}
@@ -76,6 +108,23 @@ export function SettingsForm({ lang, settings }: { lang: Lang; settings: Setting
             {field("notice_ar", `${t(lang, "adminNoticeText")} (AR)`)}
             {field("notice_en", `${t(lang, "adminNoticeText")} (EN)`)}
             {field("contact_email", t(lang, "adminContactEmail"), "email")}
+          </div>
+        </section>
+
+        <section className="card p-4">
+          <h2 className="flex items-center gap-2 text-[14px] font-bold">
+            <Clock3 className="h-4 w-4 text-[var(--accent)]" /> {lang === "ar" ? "عداد مواعيد تسليم المذكرات" : "Memorial submission countdown"}
+          </h2>
+          <p className="mt-1 text-[11.5px] leading-6 text-[var(--muted)]">
+            {lang === "ar" ? "يظهر الموعد الأول حتى نهايته، ثم يبدأ عداد الموعد الثاني تلقائيًا. الوقت المعروض مضبوط على توقيت القاهرة." : "The first deadline is shown until it expires, then the second countdown starts automatically. Times use Cairo time."}
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            {field("timer_claimant_title_ar", "عنوان موعد مذكرة المدعي (عربي)")}
+            {field("timer_claimant_title_en", "Claimant deadline title (English)")}
+            {timerDateField("timer_claimant_due_at", "نهاية موعد مذكرة المدعي (توقيت القاهرة)")}
+            {field("timer_respondent_title_ar", "عنوان موعد مذكرة المدعى عليه (عربي)")}
+            {field("timer_respondent_title_en", "Respondent deadline title (English)")}
+            {timerDateField("timer_respondent_due_at", "نهاية موعد مذكرة المدعى عليه (توقيت القاهرة)")}
           </div>
         </section>
 

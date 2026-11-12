@@ -253,10 +253,16 @@ export async function getSettings(): Promise<SettingsMap> {
 }
 
 export const DEFAULT_SETTINGS: SettingsMap = {
-  site_name_ar: "مكتبة التحكيم التجاري الدولي",
-  site_name_en: "International Commercial Arbitration Library",
-  tagline_ar: "مصادر منافسة التحكيم التجاري الدولي في مكان واحد",
-  tagline_en: "Every resource for the international commercial arbitration moot, in one place",
+  site_name_ar: "SCCAM",
+  site_name_en: "SCCAM",
+  tagline_ar: "",
+  tagline_en: "",
+  timer_claimant_title_ar: "آخر موعد لتسليم مذكرة المدعي",
+  timer_claimant_title_en: "Claimant's Memorial Submission Deadline",
+  timer_claimant_due_at: "2026-12-06T21:59:59.999Z",
+  timer_respondent_title_ar: "آخر موعد لتسليم مذكرة المدعى عليه",
+  timer_respondent_title_en: "Respondent's Memorial Submission Deadline",
+  timer_respondent_due_at: "2027-01-03T21:59:59.999Z",
   banner_ar: "موقع غير رسمي من إعداد المجتمع الطلابي — غير تابع للجهة المنظمة ولا معتمد منها.",
   banner_en: "Unofficial community site — not affiliated with or endorsed by the competition organizers.",
   notice_ar: "هذا الموقع غير رسمي ولا يتبع الجهة المنظمة للمنافسة ولا يمثلها. جميع المواد ملك لأصحابها وتُعرض للاستخدام التعليمي فقط.",

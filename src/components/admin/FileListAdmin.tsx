@@ -9,6 +9,7 @@ import type { Lang } from "@/lib/types";
 import { formatDate, formatNumber, pagesLabel } from "@/lib/format";
 import { adminJson } from "@/lib/admin-client";
 import { SortableList } from "./SortableList";
+import { AdminSelect } from "./AdminSelect";
 import { cn } from "@/lib/format";
 
 export type AdminFileRow = {
@@ -106,29 +107,11 @@ export function FileListAdmin({
       <div className="card flex flex-wrap items-end gap-2 p-3">
         <div className="min-w-[140px] flex-1">
           <label className="label" htmlFor="admin-filter-section">{t(lang, "section")}</label>
-          <select
-            id="admin-filter-section"
-            value={sectionId}
-            onChange={(e) => {
-              setSectionId(e.target.value);
-              setCategoryId("");
-              setSelected([]);
-            }}
-            className="field"
-          >
-            {sections.map((s) => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
+          <AdminSelect id="admin-filter-section" value={sectionId} options={sections.map((section) => ({ value: section.id, label: section.name }))} placeholder="اختر القسم" onChange={(value) => { setSectionId(value); setCategoryId(""); setSelected([]); }} />
         </div>
         <div className="min-w-[140px] flex-1">
           <label className="label" htmlFor="admin-filter-category">{t(lang, "subCategory")}</label>
-          <select id="admin-filter-category" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="field">
-            <option value="">{t(lang, "categoryAll")}</option>
-            {(activeSection?.categories ?? []).map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
+          <AdminSelect id="admin-filter-category" value={categoryId} options={[{ value: "", label: t(lang, "categoryAll") }, ...(activeSection?.categories ?? []).map((category) => ({ value: category.id, label: category.name }))]} placeholder={t(lang, "categoryAll")} onChange={setCategoryId} />
         </div>
         <div className="min-w-[160px] flex-1">
           <label className="label" htmlFor="admin-filter-q">{t(lang, "searchAction")}</label>
@@ -151,11 +134,7 @@ export function FileListAdmin({
         </label>
         {selected.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5">
-            <select value={bulkSection} onChange={(e) => setBulkSection(e.target.value)} className="field h-8 w-auto py-0 text-[11.5px]">
-              {sections.map((s) => (
-                <option key={s.id} value={s.id}>{s.name}</option>
-              ))}
-            </select>
+            <div className="min-w-[160px]"><AdminSelect id="admin-bulk-section" value={bulkSection} options={sections.map((section) => ({ value: section.id, label: section.name }))} onChange={setBulkSection} placeholder="اختر القسم" /></div>
             <button type="button" onClick={() => bulk("section")} disabled={busy} className="btn btn-outline btn-sm">
               {t(lang, "adminMoveTo")}
             </button>

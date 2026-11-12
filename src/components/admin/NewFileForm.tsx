@@ -6,6 +6,7 @@ import { Loader2, Plus } from "lucide-react";
 import { t } from "@/lib/i18n";
 import type { Lang } from "@/lib/types";
 import { csrfToken } from "@/lib/admin-client";
+import { AdminSelect } from "./AdminSelect";
 
 export function NewFileForm({
   lang,
@@ -16,9 +17,23 @@ export function NewFileForm({
 }) {
   const router = useRouter();
   const [sectionId, setSectionId] = useState(sections[0]?.id ?? "");
+  const [categoryId, setCategoryId] = useState("");
+  const [titleAr, setTitleAr] = useState("");
+  const [titleEn, setTitleEn] = useState("");
+  const [titleArEdited, setTitleArEdited] = useState(false);
+  const [titleEnEdited, setTitleEnEdited] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const active = sections.find((s) => s.id === sectionId);
+  const sectionOptions = sections.map((section) => ({ value: section.id, label: section.name }));
+  const categoryOptions = (active?.categories ?? []).map((category) => ({ value: category.id, label: category.name }));
+
+  function suggestTitle(file?: File) {
+    if (!file) return;
+    const suggested = file.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+    if (!titleArEdited) setTitleAr(suggested);
+    if (!titleEnEdited) setTitleEn(suggested);
+  }
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -51,28 +66,21 @@ export function NewFileForm({
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <label className="label" htmlFor="n-title-ar">{t(lang, "titleAr")}</label>
-          <input id="n-title-ar" name="titleAr" required className="field" dir="rtl" />
+          <input id="n-title-ar" name="titleAr" required className="field" dir="rtl" value={titleAr} onChange={(e) => { setTitleAr(e.target.value); setTitleArEdited(true); }} />
         </div>
         <div>
           <label className="label" htmlFor="n-title-en">{t(lang, "titleEn")}</label>
-          <input id="n-title-en" name="titleEn" className="field" dir="ltr" />
+          <input id="n-title-en" name="titleEn" className="field" dir="ltr" value={titleEn} onChange={(e) => { setTitleEn(e.target.value); setTitleEnEdited(true); }} />
         </div>
         <div>
           <label className="label" htmlFor="n-section">{t(lang, "section")}</label>
-          <select id="n-section" name="sectionId" value={sectionId} onChange={(e) => setSectionId(e.target.value)} className="field" required>
-            {sections.map((s) => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
+          <AdminSelect id="n-section" value={sectionId} options={sectionOptions} placeholder="اختر القسم" onChange={(value) => { setSectionId(value); setCategoryId(""); }} />
+          <input type="hidden" name="sectionId" value={sectionId} />
         </div>
         <div>
           <label className="label" htmlFor="n-category">{t(lang, "subCategory")}</label>
-          <select id="n-category" name="categoryId" className="field">
-            <option value="">—</option>
-            {(active?.categories ?? []).map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
+          <AdminSelect id="n-category" value={categoryId} options={categoryOptions} placeholder="بدون تصنيف" onChange={setCategoryId} />
+          <input type="hidden" name="categoryId" value={categoryId} />
         </div>
         <div>
           <label className="label" htmlFor="n-desc-ar">{t(lang, "description")} (AR)</label>
@@ -128,7 +136,8 @@ export function NewFileForm({
 
       <div>
         <label className="label" htmlFor="n-file">{t(lang, "adminUpload")}</label>
-        <input id="n-file" name="file" type="file" accept=".pdf,.docx,.txt,.md,image/png,image/jpeg,image/webp" className="field py-2 text-[12px]" />
+        <input id="n-file" name="file" type="file" accept=".pdf,.docx,.txt,.md,image/png,image/jpeg,image/webp" className="field py-2 text-[12px]" onChange={(e) => suggestTitle(e.target.files?.[0])} />
+        <p className="hint mt-1">{lang === "ar" ? "سيُقترح اسم الملف تلقائيًا كعنوان ويمكنك تعديله قبل الحفظ." : "The filename is suggested as the title and can be edited before saving."}</p>
         <p className="hint mt-1">{t(lang, "adminDropHint")}</p>
       </div>
 

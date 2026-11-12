@@ -14,15 +14,14 @@ import { siteBase } from "@/lib/format";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings();
   const lang = await getLang();
-  const title = lang === "ar" ? `${settings.site_name_ar} — مصادر منافسة التحكيم` : `${settings.site_name_en} — Moot resources`;
-  const description = lang === "ar" ? settings.tagline_ar : settings.tagline_en;
+  const title = "SCCAM";
+  const description = lang === "ar" ? "مكتبة للبحث القانوني والوثائق والمراجع." : "A library for legal research, documents and references.";
   return {
     metadataBase: new URL(siteBase()),
-    title: { default: title, template: `%s · ${lang === "ar" ? settings.site_name_ar : settings.site_name_en}` },
+    title: { default: title, template: `%s · SCCAM` },
     description,
-    applicationName: settings.site_name_en,
+    applicationName: "SCCAM",
     robots: { index: true, follow: true },
     openGraph: {
       type: "website",
@@ -65,7 +64,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main id="main" className="min-h-[60vh] min-w-0 flex-1 w-full">
           {children}
         </main>
-        <SiteFooter lang={lang} sections={sections} />
+        <SiteFooter lang={lang} />
         <ServiceWorkerRegister />
       </body>
     </html>
