@@ -44,7 +44,7 @@ export default async function HomePage() {
     <>
       <section className="relative overflow-hidden border-b border-[var(--line)]">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{
-          background: "radial-gradient(900px 380px at 85% -5%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%), radial-gradient(700px 300px at 5% 0%, color-mix(in srgb, var(--primary) 13%, transparent), transparent 70%)",
+          background: "radial-gradient(900px 380px at 88% -8%, color-mix(in srgb, var(--brand-blue) 20%, transparent), transparent 70%), radial-gradient(720px 340px at 5% 0%, color-mix(in srgb, var(--brand-green) 17%, transparent), transparent 70%), radial-gradient(520px 300px at 50% 16%, color-mix(in srgb, var(--brand-yellow) 15%, transparent), transparent 70%), radial-gradient(440px 280px at 100% 78%, color-mix(in srgb, var(--brand-orange) 11%, transparent), transparent 70%)",
         }} />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-30" style={{
           backgroundImage: "linear-gradient(to right, var(--line) 1px, transparent 1px), linear-gradient(to bottom, var(--line) 1px, transparent 1px)",
@@ -129,7 +129,7 @@ export default async function HomePage() {
           {sections.map((section) => {
             const Icon = SECTION_ICONS[section.slug] ?? Scale;
             const count = counts[section.id] ?? { files: 0, categories: 0 };
-            const sectionColor = section.slug === "laws" ? "var(--secondary)" : section.slug === "books" ? "var(--accent)" : "var(--primary)";
+            const sectionColor = section.slug === "laws" ? "var(--sky)" : section.slug === "books" ? "var(--accent)" : "var(--primary)";
             const descKey = section.slug === "laws" ? "sectionLawsDesc" : section.slug === "books" ? "sectionBooksDesc" : "sectionCaseDesc";
             return (
               <Link key={section.id} href={"/" + section.slug} className="card card-hover group relative overflow-hidden p-5" style={{ borderTopColor: sectionColor, borderTopWidth: 3 }}>
@@ -162,7 +162,7 @@ export default async function HomePage() {
             </div>
             <div className="grid gap-1 p-2 sm:grid-cols-2 lg:grid-cols-3">
               {pinned.map((file) => {
-                const sectionColor = file.section_slug === "laws" ? "var(--secondary)" : file.section_slug === "books" ? "var(--accent)" : "var(--primary)";
+                const sectionColor = file.section_slug === "laws" ? "var(--sky)" : file.section_slug === "books" ? "var(--accent)" : "var(--primary)";
                 return (
                 <Link key={file.id} href={"/file/" + file.id} className="group flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-[var(--surface)]">
                   <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[12px] font-extrabold" style={{ background: "color-mix(in srgb, " + sectionColor + " 14%, transparent)", color: sectionColor }}>
@@ -204,12 +204,13 @@ export default async function HomePage() {
 
       <section aria-labelledby="tools-title" className="container-x mt-14">
         <div className="mb-5"><h2 id="tools-title" className="section-title">{lang === "ar" ? "أدوات ومصادر الباحث" : "Research tools and resources"}</h2></div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {[
-            { href: "/guidelines", title: lang === "ar" ? "الإرشادات" : "Guidelines", body: lang === "ar" ? "دليل عملي لاستخدام المكتبة والبحث القانوني." : "A practical guide to the library and legal research." },
+            { href: "/guidelines", title: lang === "ar" ? "الإرشادات" : "Guidelines", body: lang === "ar" ? "الملفات التي تضيفها من لوحة الإدارة." : "Files you add through the admin panel." },
             { href: "/research-platforms", title: lang === "ar" ? "منصات البحث" : "Research platforms", body: lang === "ar" ? "قواعد بيانات مجانية للسوابق والأحكام الدولية." : "Free databases for international cases and judgments." },
             { href: "/references", title: lang === "ar" ? "المراجع" : "References", body: lang === "ar" ? "مراجع متخصصة في التحكيم والقانون الدولي الخاص." : "Specialist references on arbitration and private international law." },
-            { href: "/memoranda", title: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", body: lang === "ar" ? "مذكرات المنافسة في مكان واحد." : "Competition memoranda in one place." },
+            { href: "/memoranda", title: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", body: lang === "ar" ? "المذكرات التي ترفعها من لوحة الإدارة." : "Memoranda you upload through the admin panel." },
+            { href: "/previous-editions", title: lang === "ar" ? "أرشيف الإصدارات السابقة" : "Previous editions", body: lang === "ar" ? "النسخ السابقة التي تضيفها للمكتبة." : "Previous versions you add to the library." },
           ].map((item) => (
             <Link key={item.href} href={item.href} className="card card-hover block p-5">
               <h3 className="text-[15px] font-bold text-[var(--primary)]">{item.title}</h3>

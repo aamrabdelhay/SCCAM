@@ -56,7 +56,7 @@ export async function SectionPage({
   });
 
   const Icon = ICONS[slug] ?? Files;
-  const accent = slug === "laws" ? "var(--secondary)" : slug === "books" ? "var(--accent)" : "var(--primary)";
+  const accent = slug === "laws" ? "var(--sky)" : slug === "books" ? "var(--accent)" : "var(--primary)";
   const total = allInSection.length;
 
   const buildHref = (patch: Record<string, string | undefined>) => {

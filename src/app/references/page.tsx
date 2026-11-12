@@ -66,6 +66,47 @@ const arbitrationReferences = [
   "وائل أنور البندق، الاتفاقيات الدولية وقوانين الدول العربية: موسوعة التحكيم (دار الفكر الجامعي، الإسكندرية، 2004).",
 ];
 
+const referenceSources: Record<string, { label: string; url: string; note?: string }[]> = {
+  "a-0": [
+    { label: "Google Books", url: "https://books.google.com/books/about/%D8%A7%D9%84%D8%AA%D8%AD%D9%83%D9%8A%D9%85_%D8%A7%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D9%8A_%D8%A7%D9%84%D8%AF%D9%88%D9%84.html?id=pV-kPQAACAAJ" },
+    { label: "فهرس مكتبة ديوان الجريدة الرسمية", url: "https://library.ogb.gov.ps/records/index/1/986" },
+  ],
+  "a-1": [
+    { label: "فهرس مكتبة CRCICA", url: "https://library.crcica.org/cgi-bin/koha/opac-detail.pl?biblionumber=1818", note: "السجل المتاح يثبت طبعة 1984، لا بيانات 1998 الواردة في القائمة." },
+  ],
+  "a-3": [{ label: "WorldCat", url: "https://search.worldcat.org/title/874158113" }],
+  "a-4": [{ label: "فهرس جامعة باتنة 1", url: "https://pmb.univ-batna.dz/opac_bcu/index.php?id=36353&lvl=notice_display" }],
+  "a-6": [{ label: "صفحة الناشر – دار النهضة العربية", url: "https://www.daralnahda.com/book/32339/%D9%86%D8%B8%D8%B1%D9%8A%D8%A9-%D8%A7%D9%84%D8%B9%D9%82%D8%AF-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D8%A7%D9%84%D8%B7%D9%84%D9%8A%D9%82-%D8%A8%D9%8A%D9%86-%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D8%A7%D9%84%D8%AE%D8%A7%D8%B5-%D9%88%D9%82%D8%A7%D9%86%D9%88%D9%86-%D8%A7%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D8%A9-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%D8%A9-%D8%AF%D8%B1%D8%A7%D8%B3%D8%A9-%D8%AA%D8%A7%D8%B5%D9%8A%D9%84%D9%8A%D8%A9-%D8%A7%D9%86%D8%AA%D9%82%D8%A7%D8%AF%D9%8A%D8%A9", note: "صفحة الناشر تعرض بيانات إصدار أحدث من سنة 1989 المذكورة." }],
+  "a-8": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=185304" }],
+  "a-13": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=209779&shelfbrowse_itemnumber=345485" }],
+  "a-18": [
+    { label: "فهرس مكتبة CRCICA", url: "https://library.crcica.org/cgi-bin/koha/opac-detail.pl?biblionumber=2129", note: "السجل المتاح يذكر طبعة 1987؛ راجع اختلاف الطبعة عن القائمة." },
+    { label: "فهرس معهد التخطيط القومي", url: "https://catalog.inp.edu.eg/cgi-bin/koha/opac-detail.pl?biblionumber=13125&shelfbrowse_itemnumber=13842" },
+  ],
+  "a-19": [
+    { label: "دار الكتب والوثائق العراقية", url: "https://www.iraqnla.gov.iq/opac/fullrecr.php?hl=ara&nid=62961" },
+    { label: "WorldCat", url: "https://search.worldcat.org/title/aqd-althkym-wajraaath/oclc/11420523" },
+  ],
+  "a-23": [{ label: "Google Books", url: "https://books.google.com/books/about/%D8%A7%D9%84%D9%82%D9%88%D8%A9_%D8%A7%D9%84%D8%AA%D9%86%D9%81%D9%8A%D8%B0%D9%8A%D8%A9_%D9%84%D8%AD%D9%83%D9%85.html?id=WX3RAAAACAAJ" }],
+  "a-24": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=146197", note: "السجل المتاح يذكر سنة 2001؛ القائمة تذكر 2000." }],
+  "a-26": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=135905&query_desc=", note: "بيانات الطبعة المسجلة 2003." }],
+  "a-31": [{ label: "فهرس مكتبة كلية الحقوق – جامعة القاهرة", url: "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-detail.pl?biblionumber=28028", note: "الفهرس يعرض طبعة 1994؛ القائمة تذكر 1997." }],
+  "a-43": [{ label: "فهرس مكتبة ديوان الجريدة الرسمية", url: "https://library.ogb.gov.ps/records/index/1/756" }],
+  "a-48": [{ label: "فهرس مكتبة ديوان الجريدة الرسمية", url: "https://library.ogb.gov.ps/records/index/1/1131" }],
+  "a-50": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=132146&shelfbrowse_itemnumber=182939", note: "السجل المتاح يذكر إصدار 1997." }],
+  "a-59": [{ label: "صفحة الناشر – منشورات الحلبي الحقوقية", url: "https://halabi-lp.com/arabic/books/ShowBook.aspx?BookID=564" }],
+  "p-0": [{ label: "فهرس جامعة الإمارات للطيران", url: "https://catalog.aue.ae/cgi-bin/koha/opac-detail.pl?biblionumber=25973", note: "السجل المتاح يذكر طبعة 1995؛ القائمة تذكر 2001." }],
+  "p-3": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=135907&query_desc=" }],
+  "p-5": [{ label: "فهرس مكتبة كلية الحقوق – جامعة القاهرة", url: "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-detail.pl?biblionumber=43321" }],
+  "a-10": [{ label: "فهرس المكتبة البرلمانية الجزائرية", url: "https://bibliotheque.apn.dz/index.php?id=97&lvl=etagere_see&nb_per_page_custom=25&nbr_lignes=530&page=14" }],
+  "a-11": [{ label: "فهرس المكتبة المركزية للجامعة الإسلامية", url: "https://iulibrary.com/" }],
+  "a-12": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=169226" }],
+  "a-20": [{ label: "فهرس جامعة سطيف 2", url: "https://cfdsp.univ-setif2.dz/opac_css/index.php?dcote=&id=27&lcote=0&location=9&lvl=section_see&main=&nb_per_page_custom=25&nbr_lignes=13310&nc=0&page=530&plettreaut=&ssub=0" }],
+  "a-22": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=135941" }],
+  "a-53": [{ label: "فهرس مكتبة CRCICA", url: "https://library.crcica.org/cgi-bin/koha/opac-detail.pl?biblionumber=3260" }],
+  "p-4": [{ label: "صفحة الناشر – دار النهضة العربية", url: "https://www.daralnahda.com/book/4072/%D9%85%D8%AF%D9%88%D9%86%D8%A9-%D8%A7%D8%A8%D8%AD%D8%A7%D8%AB-%D9%81%D9%8A-%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D8%A7%D9%84%D8%AE%D8%A7%D8%B5" }],
+};
+
 const privateInternationalLawReferences = [
   "هشام علي صادق، القانون الواجب التطبيق على عقود التجارة الدولية (منشأة المعارف، الإسكندرية، 2001).",
   "هشام صادق وعكاشة محمد عبد العال، القانون الدولي الخاص: تنازع القوانين - الاختصاص القضائي الدولي - الجنسية (دار المطبوعات الجامعية، 2012).",
@@ -106,14 +147,11 @@ export default async function ReferencesPage({ searchParams }: { searchParams: P
         <button type="submit" className="btn btn-primary btn-sm absolute end-1 top-1/2 -translate-y-1/2">{ar ? "بحث" : "Search"}</button>
       </form>
 
-      <div className="mt-5 rounded-2xl border border-[var(--line)] p-5" style={{ background: "color-mix(in srgb, var(--accent) 11%, var(--bg))" }}>
-        <h2 className="text-[14px] font-extrabold">{ar ? "حالة ملفات PDF المجانية" : "Free PDF availability"}</h2>
-        <p className="mt-2 text-[12.5px] leading-8 text-[var(--muted)]">
-          {ar
-            ? "لم أتحقق حتى الآن من رابط يتيح نسخة PDF كاملة ومجانية من هذه الكتب عبر مصدر يملك حق نشرها أو يصرّح بإتاحتها. لذلك لم أضع روابط تحميل من مواقع مجهولة أو نسخًا ناقصة أو فهارس مكتبات لا توفر الكتاب نفسه. ستضاف روابط التنزيل هنا فقط عند التحقق من اكتمال النسخة ومشروعية إتاحتها."
-            : "No link has yet been verified as a complete, free PDF made available by an authorized source. For that reason, this page does not link to unknown sites, incomplete copies or catalogue records that do not provide the book itself. Download links will be added only after the file's completeness and lawful availability are verified."}
-        </p>
-      </div>
+      <p className="mt-5 text-[12px] leading-7 text-[var(--muted)]">
+        {ar
+          ? "روابط المصادر بجانب العناوين تقود إلى فهارس مكتبات أو صفحات الناشرين أو سجلات ببليوغرافية للتحقق من بيانات الطبعة."
+          : "Source links beside titles lead to library catalogues, publisher pages or bibliographic records for edition verification."}
+      </p>
 
       <section className="mt-9">
         <div className="mb-4 flex items-baseline justify-between gap-3">
@@ -121,12 +159,19 @@ export default async function ReferencesPage({ searchParams }: { searchParams: P
           <span className="text-[12px] font-semibold text-[var(--muted)]">{arbitration.length} / {arbitrationReferences.length}</span>
         </div>
         <ol className="grid gap-2">
-          {arbitration.map((item) => (
-            <li key={item} className="card flex items-start gap-3 p-4">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[var(--primary-soft)] text-[11px] font-extrabold text-[var(--primary)]">{arbitrationReferences.indexOf(item) + 1}</span>
-              <p className="text-[12.5px] leading-8 text-[var(--text)]" dir="rtl">{item}</p>
-            </li>
-          ))}
+          {arbitration.map((item) => {
+            const sourceLinks = referenceSources["a-" + arbitrationReferences.indexOf(item)] ?? [];
+            return (
+              <li key={item} className="card flex items-start gap-3 p-4">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[var(--primary-soft)] text-[11px] font-extrabold text-[var(--primary)]">{arbitrationReferences.indexOf(item) + 1}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[12.5px] leading-8 text-[var(--text)]" dir="rtl">{item}</p>
+                  {sourceLinks.length > 0 && <div className="mt-2 flex flex-wrap gap-2">{sourceLinks.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[var(--line)] bg-[var(--surface)] px-3 py-1 text-[11px] font-semibold text-[var(--secondary)] hover:border-[var(--secondary)]">{source.label} ↗</a>)}</div>}
+                  {sourceLinks.some((source) => source.note) && <p className="mt-2 text-[10.5px] leading-6 text-[var(--muted)]">{sourceLinks.filter((source) => source.note).map((source) => source.note).join(" · ")}</p>}
+                </div>
+              </li>
+            );
+          })}
         </ol>
         {arbitration.length === 0 && <p className="card mt-3 p-5 text-sm text-[var(--muted)]">{ar ? "لا توجد نتائج مطابقة." : "No matching references."}</p>}
       </section>
@@ -137,12 +182,19 @@ export default async function ReferencesPage({ searchParams }: { searchParams: P
           <span className="text-[12px] font-semibold text-[var(--muted)]">{privateLaw.length} / {privateInternationalLawReferences.length}</span>
         </div>
         <ol className="grid gap-2">
-          {privateLaw.map((item) => (
-            <li key={item} className="card flex items-start gap-3 p-4">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[var(--primary-soft)] text-[11px] font-extrabold text-[var(--primary)]">{privateInternationalLawReferences.indexOf(item) + 61}</span>
-              <p className="text-[12.5px] leading-8 text-[var(--text)]" dir="rtl">{item}</p>
-            </li>
-          ))}
+          {privateLaw.map((item) => {
+            const sourceLinks = referenceSources["p-" + privateInternationalLawReferences.indexOf(item)] ?? [];
+            return (
+              <li key={item} className="card flex items-start gap-3 p-4">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[var(--primary-soft)] text-[11px] font-extrabold text-[var(--primary)]">{privateInternationalLawReferences.indexOf(item) + 61}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[12.5px] leading-8 text-[var(--text)]" dir="rtl">{item}</p>
+                  {sourceLinks.length > 0 && <div className="mt-2 flex flex-wrap gap-2">{sourceLinks.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[var(--line)] bg-[var(--surface)] px-3 py-1 text-[11px] font-semibold text-[var(--secondary)] hover:border-[var(--secondary)]">{source.label} ↗</a>)}</div>}
+                  {sourceLinks.some((source) => source.note) && <p className="mt-2 text-[10.5px] leading-6 text-[var(--muted)]">{sourceLinks.filter((source) => source.note).map((source) => source.note).join(" · ")}</p>}
+                </div>
+              </li>
+            );
+          })}
         </ol>
         {privateLaw.length === 0 && <p className="card mt-3 p-5 text-sm text-[var(--muted)]">{ar ? "لا توجد نتائج مطابقة." : "No matching references."}</p>}
       </section>

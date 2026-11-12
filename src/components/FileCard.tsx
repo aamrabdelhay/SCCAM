@@ -22,7 +22,7 @@ export function FileCard({
   const title = pickText(lang, file.title_ar, file.title_en);
   const description = pickText(lang, file.description_ar, file.description_en);
   const sectionName = pickText(lang, file.section_name_ar, file.section_name_en);
-  const sectionColor = file.section_slug === "laws" ? "var(--secondary)" : file.section_slug === "books" ? "var(--accent)" : "var(--primary)";
+  const sectionColor = file.section_slug === "laws" ? "var(--sky)" : file.section_slug === "books" ? "var(--accent)" : "var(--primary)";
   const categoryName = file.category_name_ar ? pickText(lang, file.category_name_ar, file.category_name_en) : null;
   const Arrow = lang === "ar" ? ArrowLeft : ArrowRight;
   const badges = (
@@ -104,7 +104,7 @@ export function FileCard({
 
 export function FileMiniCard({ file, lang }: { file: FileWithMeta; lang: Lang }) {
   const title = pickText(lang, file.title_ar, file.title_en);
-  const sectionColor = file.section_slug === "laws" ? "var(--secondary)" : file.section_slug === "books" ? "var(--accent)" : "var(--primary)";
+  const sectionColor = file.section_slug === "laws" ? "var(--sky)" : file.section_slug === "books" ? "var(--accent)" : "var(--primary)";
   return (
     <Link href={`/file/${file.id}`} className="group flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-[var(--surface)]">
       <span

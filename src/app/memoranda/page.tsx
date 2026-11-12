@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FileText, SearchCheck } from "lucide-react";
+import { FileText, LockKeyhole, SearchCheck } from "lucide-react";
 import { getLang } from "@/lib/server-lang";
 import { listFiles } from "@/lib/queries";
 import { FileCard } from "@/components/FileCard";
@@ -50,7 +50,7 @@ export default async function MemorandaPage() {
               ? "سيظهر أي ملف منشور يحمل في عنوانه أو وصفه كلمات مثل «مذكرة» أو Memorial أو Memorandum هنا تلقائيًا. يمكن الوصول إلى بقية المستندات من أقسام المكتبة."
               : "Published files whose title or description identifies them as a memorial or memorandum will appear here automatically. Other documents remain available in the library sections."}
           </p>
-          <Link href="/case" className="btn btn-primary mt-5">{ar ? "تصفح ملف القضية" : "Browse case materials"}</Link>
+          <Link href="/admin" className="btn btn-primary mt-5"><LockKeyhole className="h-4 w-4" aria-hidden="true" />{ar ? "إضافة مذكرات من لوحة الإدارة" : "Add memoranda in admin"}</Link>
         </div>
       )}
     </div>

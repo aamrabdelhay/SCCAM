@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
       "./node_modules/pdfjs-dist/standard_fonts/**",
     ],
   },
+  async redirects() {
+    return [
+      { source: "/faq", destination: "/", permanent: true },
+      { source: "/clarifications", destination: "/", permanent: true },
+      { source: "/glossary", destination: "/", permanent: true },
+      { source: "/contact", destination: "/", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

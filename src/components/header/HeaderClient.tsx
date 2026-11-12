@@ -15,7 +15,6 @@ import {
   Archive,
   BookOpen,
   FileText,
-  HelpCircle,
   Bookmark,
   Compass,
   Globe,
@@ -102,13 +101,12 @@ export function HeaderClient({
 
   const archiveLinks = [
     { href: "/archive", label: t(lang, "archiveTitle"), icon: Archive },
-    { href: "/clarifications", label: t(lang, "clarificationsTitle"), icon: HelpCircle },
+    { href: "/previous-editions", label: lang === "ar" ? "أرشيف الإصدارات السابقة" : "Previous editions", icon: Archive },
     { href: "/library", label: t(lang, "navLibrary"), icon: Bookmark },
     { href: "/memoranda", label: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", icon: FileText },
+    { href: "/guidelines", label: lang === "ar" ? "الإرشادات" : "Guidelines", icon: Compass },
     { href: "/research-platforms", label: lang === "ar" ? "منصات البحث" : "Research platforms", icon: Globe },
     { href: "/references", label: lang === "ar" ? "المراجع" : "References", icon: BookOpen },
-    { href: "/guidelines", label: lang === "ar" ? "الإرشادات" : "Guidelines", icon: Compass },
-    { href: "/faq", label: t(lang, "faqTitle"), icon: HelpCircle },
   ];
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
@@ -117,14 +115,15 @@ export function HeaderClient({
     <header
       className={cn(
         "no-print sticky top-0 z-40 border-b border-[var(--line)] backdrop-blur-xl transition-shadow duration-300",
-        scrolled ? "shadow-[0_10px_30px_-24px_rgba(0,0,0,.45)]" : "",
+        scrolled ? "shadow-[0_10px_30px_-24px_rgba(12,72,113,.25)]" : "",
       )}
       style={{ background: "var(--header)" }}
     >
+      <div aria-hidden="true" className="h-[3px] w-full" style={{ background: "linear-gradient(90deg, #43A53C 0%, #0C873E 22%, #EE940F 42%, #F4B042 58%, #2975B2 78%, #0C4871 100%)" }} />
       <div className="container-x flex h-16 items-center gap-3">
         <button
           type="button"
-          className="btn btn-ghost -ms-2 px-2 lg:hidden"
+          className="btn btn-ghost -ms-2 px-2 xl:hidden"
           aria-label={t(lang, "menu")}
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen((v) => !v)}
@@ -134,14 +133,14 @@ export function HeaderClient({
 
         <Logo lang={lang} siteName={siteName} />
 
-        <nav aria-label={lang === "ar" ? "التنقل الرئيسي" : "Main navigation"} className="hidden items-center gap-0.5 lg:flex">
+        <nav aria-label={lang === "ar" ? "التنقل الرئيسي" : "Main navigation"} className="hidden items-center gap-0.5">
           {nav.slice(0, 4).map((item) => (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
               className={cn(
-                "relative rounded-lg px-3 py-2 text-[13.5px] font-semibold transition-colors",
+                "relative rounded-lg px-2 py-2 text-[13px] font-semibold transition-colors",
                 isActive(item.href)
                   ? "text-[var(--primary)] dark:text-[var(--accent)]"
                   : "text-[var(--muted)] hover:text-[var(--text)]",
@@ -202,7 +201,7 @@ export function HeaderClient({
         </nav>
 
         <div className="ms-auto flex items-center gap-1.5">
-          <div className="hidden w-[240px] xl:block">
+          <div className="hidden w-[220px] 2xl:block">
             <SearchBox lang={lang} size="sm" />
           </div>
           <button
@@ -215,7 +214,7 @@ export function HeaderClient({
             {searchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
           </button>
 
-          <div className="hidden items-center gap-0.5 md:flex">
+          <div className="hidden items-center gap-0.5 xl:flex">
             {socials.map((s) => (
               <a
                 key={s.kind}
@@ -253,7 +252,7 @@ export function HeaderClient({
       )}
 
       {mobileOpen && (
-        <div className="no-print border-t border-[var(--line)] bg-[var(--card)] lg:hidden">
+        <div className="no-print border-t border-[var(--line)] bg-[var(--card)] xl:hidden">
           <nav aria-label={t(lang, "menu")} className="container-x flex flex-col py-2">
             {nav.map((item) => (
               <Link

@@ -6,21 +6,32 @@
    Design tokens — change the brand here, everywhere follows.
    ============================================================ */
 :root {
-  --primary: #238b46;
-  --primary-soft: #e7f3e8;
-  --secondary: #0b527a;
-  --secondary-soft: #e8f2f8;
-  --accent: #f5a10b;
-  --bg: #fbfdfb;
-  --surface: #f0f6f1;
-  --text: #173b2a;
-  --muted: #5b7164;
-  --line: #dce8de;
-  --card: #ffffff;
-  --header: rgba(251, 253, 251, 0.94);
-  --mark: #ffe5ad;
-  --danger: #b3261e;
-  --shadow-color: 35 139 70;
+  /* Exact palette sampled from the supplied logo */
+  --brand-green: #43A53C;
+  --brand-green-deep: #0C873E;
+  --brand-orange: #EE940F;
+  --brand-yellow: #F4B042;
+  --brand-blue: #2975B2;
+  --brand-navy: #0C4871;
+  --brand-white: #FFFFFF;
+
+  --primary: var(--brand-green-deep);
+  --primary-soft: #EAF5E8;
+  --secondary: var(--brand-navy);
+  --secondary-soft: #E5F0F7;
+  --accent: var(--brand-orange);
+  --sun: var(--brand-yellow);
+  --sky: var(--brand-blue);
+  --bg: #FAFCFD;
+  --surface: #EEF5F8;
+  --text: #103750;
+  --muted: #597182;
+  --line: #D8E5EC;
+  --card: #FFFFFF;
+  --header: rgba(255, 255, 255, 0.96);
+  --mark: #FFE8B8;
+  --danger: #B3261E;
+  --shadow-color: 12 72 113;
 
   --font-sans: "Cairo Variable", "Cairo", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Cairo Variable", "Cairo", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
@@ -75,6 +86,18 @@ body {
 }
 
 @layer components {
+  .brand-spectrum {
+    background: linear-gradient(90deg, var(--brand-green) 0%, var(--brand-green-deep) 22%, var(--brand-orange) 42%, var(--brand-yellow) 58%, var(--brand-blue) 78%, var(--brand-navy) 100%);
+  }
+
+  .brand-blue-accent {
+    color: var(--brand-blue);
+  }
+
+  .brand-sun-accent {
+    color: var(--brand-yellow);
+  }
+
   .container-x {
     @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8;
   }
@@ -91,7 +114,7 @@ body {
   }
   .card-hover:hover {
     transform: translateY(-2px);
-    box-shadow: 0 18px 40px -26px rgba(11, 61, 46, 0.45);
+    box-shadow: 0 18px 40px -26px rgba(12, 72, 113, 0.24);
     border-color: color-mix(in srgb, var(--primary) 22%, var(--line));
   }
 
@@ -103,14 +126,14 @@ body {
   .btn-primary {
     background: var(--primary);
     color: #fff;
-    box-shadow: 0 10px 24px -14px rgba(11, 61, 46, 0.7);
+    box-shadow: 0 10px 24px -14px rgba(12, 72, 113, 0.5);
   }
   .btn-primary:hover {
     background: color-mix(in srgb, var(--primary) 88%, #000);
   }
   .btn-accent {
     background: var(--accent);
-    color: #1a1a1a;
+    color: var(--brand-navy);
   }
   .btn-accent:hover {
     background: color-mix(in srgb, var(--accent) 88%, #000);
