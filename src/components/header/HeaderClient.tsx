@@ -15,7 +15,6 @@ import {
   Archive,
   BookOpen,
   FileText,
-  HelpCircle,
   Bookmark,
   Compass,
   Globe,
@@ -102,13 +101,11 @@ export function HeaderClient({
 
   const archiveLinks = [
     { href: "/archive", label: t(lang, "archiveTitle"), icon: Archive },
-    { href: "/clarifications", label: t(lang, "clarificationsTitle"), icon: HelpCircle },
     { href: "/library", label: t(lang, "navLibrary"), icon: Bookmark },
     { href: "/memoranda", label: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", icon: FileText },
     { href: "/research-platforms", label: lang === "ar" ? "منصات البحث" : "Research platforms", icon: Globe },
     { href: "/references", label: lang === "ar" ? "المراجع" : "References", icon: BookOpen },
     { href: "/guidelines", label: lang === "ar" ? "الإرشادات" : "Guidelines", icon: Compass },
-    { href: "/faq", label: t(lang, "faqTitle"), icon: HelpCircle },
   ];
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
@@ -116,7 +113,7 @@ export function HeaderClient({
   return (
     <header
       className={cn(
-        "no-print sticky top-0 z-40 border-b border-[var(--line)] backdrop-blur-xl transition-shadow duration-300",
+        "site-header no-print sticky top-0 z-40 border-b border-[var(--line)] backdrop-blur-xl transition-shadow duration-300",
         scrolled ? "shadow-[0_10px_30px_-24px_rgba(0,0,0,.45)]" : "",
       )}
       style={{ background: "var(--header)" }}
