@@ -3,6 +3,7 @@ import "./globals.css";
 import { getLang } from "@/lib/server-lang";
 import { getSiteSettings, getSections } from "@/lib/queries";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import { TopBanner } from "@/components/TopBanner";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 // Self-hosted variable fonts (no external CDN — required for offline/PWA).
@@ -54,7 +55,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const dir = lang === "ar" ? "rtl" : "ltr";
   return (
     <html lang={lang} dir={dir}>
-      <body className="min-h-dvh antialiased">
+      <body className="flex min-h-dvh flex-col antialiased">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:z-[100] focus:rounded-lg focus:bg-[var(--primary)] focus:px-4 focus:py-2 focus:text-white"
@@ -63,9 +64,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </a>
         <TopBanner lang={lang} settings={settings} />
         <SiteHeader lang={lang} settings={settings} sections={sections} />
-        <main id="main" className="min-h-[60vh]">
+        <main id="main" className="min-h-[60vh] w-full flex-1">
           {children}
         </main>
+        <SiteFooter lang={lang} settings={settings} sections={sections} />
         <ServiceWorkerRegister />
       </body>
     </html>
