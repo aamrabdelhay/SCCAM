@@ -123,7 +123,7 @@ export function HeaderClient({
       <div className="container-x flex h-16 items-center gap-3">
         <button
           type="button"
-          className="btn btn-ghost -ms-2 px-2 2xl:hidden"
+          className="btn btn-ghost -ms-2 px-2 xl:hidden"
           aria-label={t(lang, "menu")}
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen((v) => !v)}
@@ -133,14 +133,14 @@ export function HeaderClient({
 
         <Logo lang={lang} siteName={siteName} />
 
-        <nav aria-label={lang === "ar" ? "التنقل الرئيسي" : "Main navigation"} className="hidden items-center gap-0.5 2xl:flex">
+        <nav aria-label={lang === "ar" ? "التنقل الرئيسي" : "Main navigation"} className="hidden items-center gap-0.5">
           {nav.slice(0, 4).map((item) => (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
               className={cn(
-                "relative rounded-lg px-3 py-2 text-[13.5px] font-semibold transition-colors",
+                "relative rounded-lg px-2 py-2 text-[13px] font-semibold transition-colors",
                 isActive(item.href)
                   ? "text-[var(--primary)] dark:text-[var(--accent)]"
                   : "text-[var(--muted)] hover:text-[var(--text)]",
@@ -206,7 +206,7 @@ export function HeaderClient({
           </div>
           <button
             type="button"
-            className="btn btn-ghost px-2 2xl:hidden"
+            className="btn btn-ghost px-2 xl:hidden"
             aria-label={t(lang, "searchGlobal")}
             aria-expanded={searchOpen}
             onClick={() => setSearchOpen((v) => !v)}
@@ -214,7 +214,7 @@ export function HeaderClient({
             {searchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
           </button>
 
-          <div className="hidden items-center gap-0.5 2xl:flex">
+          <div className="hidden items-center gap-0.5 xl:flex">
             {socials.map((s) => (
               <a
                 key={s.kind}
@@ -243,7 +243,7 @@ export function HeaderClient({
         <div
           id="header-search-panel"
           ref={searchWrapRef}
-          className="no-print border-t border-[var(--line)] bg-[var(--card)] px-4 py-3 2xl:hidden"
+          className="no-print border-t border-[var(--line)] bg-[var(--card)] px-4 py-3 xl:hidden"
         >
           <div className="mx-auto max-w-2xl">
             <SearchBox lang={lang} autoFocus onNavigate={() => setSearchOpen(false)} />
@@ -252,7 +252,7 @@ export function HeaderClient({
       )}
 
       {mobileOpen && (
-        <div className="no-print border-t border-[var(--line)] bg-[var(--card)] 2xl:hidden">
+        <div className="no-print border-t border-[var(--line)] bg-[var(--card)] xl:hidden">
           <nav aria-label={t(lang, "menu")} className="container-x flex flex-col py-2">
             {nav.map((item) => (
               <Link
