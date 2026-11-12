@@ -130,18 +130,19 @@ export default async function HomePage() {
           {sections.map((section) => {
             const Icon = SECTION_ICONS[section.slug] ?? Scale;
             const count = counts[section.id] ?? { files: 0, categories: 0 };
+            const sectionColor = section.slug === "laws" ? "var(--secondary)" : section.slug === "books" ? "var(--accent)" : "var(--primary)";
             const descKey = section.slug === "laws" ? "sectionLawsDesc" : section.slug === "books" ? "sectionBooksDesc" : "sectionCaseDesc";
             return (
-              <Link key={section.id} href={"/" + section.slug} className="card card-hover group relative overflow-hidden p-5" style={{ borderTopColor: section.accent, borderTopWidth: 3 }}>
+              <Link key={section.id} href={"/" + section.slug} className="card card-hover group relative overflow-hidden p-5" style={{ borderTopColor: sectionColor, borderTopWidth: 3 }}>
                 <div className="flex items-start justify-between">
-                  <span className="grid h-11 w-11 place-items-center rounded-xl" style={{ background: "color-mix(in srgb, " + section.accent + " 13%, transparent)", color: section.accent }}>
+                  <span className="grid h-11 w-11 place-items-center rounded-xl" style={{ background: "color-mix(in srgb, " + sectionColor + " 13%, transparent)", color: sectionColor }}>
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
                   <span className="rounded-full bg-[var(--surface)] px-2.5 py-1 text-[10.5px] font-bold text-[var(--muted)]">{filesLabel(count.files, lang)}</span>
                 </div>
                 <h3 className="font-display mt-3.5 text-[19px] font-extrabold">{pickText(lang, section.name_ar, section.name_en)}</h3>
                 <p className="mt-1.5 text-[12.5px] leading-relaxed text-[var(--muted)]">{pickText(lang, section.description_ar, section.description_en) || t(lang, descKey)}</p>
-                <div className="mt-4 flex items-center justify-between border-t border-[var(--line)] pt-3 text-[12px] font-semibold" style={{ color: section.accent }}>
+                <div className="mt-4 flex items-center justify-between border-t border-[var(--line)] pt-3 text-[12px] font-semibold" style={{ color: sectionColor }}>
                   <span>{t(lang, "browseSection")}</span><Arrow className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                 </div>
               </Link>
