@@ -76,6 +76,198 @@ const privateInternationalLawReferences = [
   "نادر محمد إبراهيم، مركز القواعد عبر الدولية أمام التحكيم الاقتصادي الدولي (دار الفكر الجامعي، الإسكندرية، 2002).",
 ];
 
+const referenceSources: Record<number, { url: string; labelAr: string; labelEn: string; noteAr?: string; noteEn?: string }[]> = {
+  "1": [
+    {
+      "url": "https://library.ogb.gov.ps/Records/IndexToPrint?libId=1&recordNo=986",
+      "labelAr": "فهرس مكتبة ديوان الجريدة الرسمية",
+      "labelEn": "Official Gazette Library catalogue"
+    },
+    {
+      "url": "https://books.google.com/books?id=pV-kPQAACAAJ",
+      "labelAr": "بيانات Google Books",
+      "labelEn": "Google Books record"
+    }
+  ],
+  "3": [
+    {
+      "url": "https://books.google.com/books?id=u-LtQwAACAAJ",
+      "labelAr": "بيانات Google Books",
+      "labelEn": "Google Books record"
+    }
+  ],
+  "4": [
+    {
+      "url": "https://search.worldcat.org/title/874158113",
+      "labelAr": "فهرس WorldCat",
+      "labelEn": "WorldCat catalogue"
+    }
+  ],
+  "5": [
+    {
+      "url": "https://pmb.univ-batna.dz/opac_bcu/index.php?id=36353&lvl=notice_display",
+      "labelAr": "فهرس جامعة باتنة",
+      "labelEn": "University of Batna catalogue"
+    }
+  ],
+  "6": [
+    {
+      "url": "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-detail.pl?biblionumber=28069",
+      "labelAr": "فهرس مكتبة الحقوق – جامعة القاهرة",
+      "labelEn": "Cairo University Law Library catalogue"
+    },
+    {
+      "url": "https://www.daralnahda.com/book/4079/%D8%A7%D9%84%D8%AA%D8%AD%D9%83%D9%8A%D9%85-%D9%81%D9%8A-%D8%A7%D9%84%D9%85%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D8%AF%D8%A7%D8%AE%D9%84%D9%8A%D8%A9-%D9%88%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D9%85%D8%AF%D9%86%D9%8A%D8%A9-%D9%88%D8%A7%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D9%8A%D8%A9-%D9%88%D8%A7%D9%84%D8%A7%D8%AF%D8%A7%D8%B1%D9%8A%D8%A9-%D9%88%D8%A7%D9%84%D8%AC%D9%85%D8%B1%D9%83%D9%8A%D8%A9-%D8%AF%D8%B1%D8%A7%D8%B3%D8%A9-%D9%85%D9%82%D8%A7%D8%B1%D9%86%D8%A9",
+      "labelAr": "صفحة الكتاب لدى دار النهضة",
+      "labelEn": "Dar Al-Nahda publisher page"
+    }
+  ],
+  "9": [
+    {
+      "url": "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=185304",
+      "labelAr": "فهرس مكتبة اتحاد الإمارات",
+      "labelEn": "UAE Federation Library catalogue"
+    }
+  ],
+  "11": [
+    {
+      "url": "https://bibliotheque.apn.dz/index.php?id=97&lvl=etagere_see&nb_per_page_custom=25&nbr_lignes=530&page=14",
+      "labelAr": "فهرس المكتبة البرلمانية الجزائرية",
+      "labelEn": "Algerian Parliament Library catalogue"
+    }
+  ],
+  "12": [
+    {
+      "url": "https://fac.umc.edu.dz/droit/bib/pagesbib/livre.php?id_livre=6314",
+      "labelAr": "فهرس جامعة قسنطينة",
+      "labelEn": "Constantine University catalogue",
+      "noteAr": "الفهرس يسجل سنة 2005؛ راجع سنة الطبعة قبل الاستشهاد.",
+      "noteEn": "The catalogue records 2005; verify the edition year before citing."
+    }
+  ],
+  "14": [
+    {
+      "url": "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=209779",
+      "labelAr": "فهرس مكتبة اتحاد الإمارات",
+      "labelEn": "UAE Federation Library catalogue"
+    }
+  ],
+  "19": [
+    {
+      "url": "https://ism.biblio.ma/ar/index.php?id=6852&lvl=notice_display",
+      "labelAr": "فهرس المعهد العالي للقضاء بالمغرب",
+      "labelEn": "Morocco Higher Institute of Judiciary catalogue"
+    }
+  ],
+  "24": [
+    {
+      "url": "https://books.google.com/books?id=WX3RAAAACAAJ",
+      "labelAr": "بيانات Google Books",
+      "labelEn": "Google Books record"
+    }
+  ],
+  "25": [
+    {
+      "url": "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=146197",
+      "labelAr": "فهرس مكتبة اتحاد الإمارات",
+      "labelEn": "UAE Federation Library catalogue",
+      "noteAr": "السجل المتاح يسجل سنة 2001، بينما القائمة الأصلية تذكر 2000.",
+      "noteEn": "The catalogue record lists 2001, while the supplied list says 2000."
+    }
+  ],
+  "26": [
+    {
+      "url": "https://www.iraqnla.gov.iq/opac/fullrecr.php?hl=ara&nid=3697",
+      "labelAr": "فهرس دار الكتب والوثائق العراقية",
+      "labelEn": "Iraqi National Library and Archives catalogue"
+    }
+  ],
+  "32": [
+    {
+      "url": "https://cbc.univ-setif2.dz/opac_css/index.php?id=52328&lvl=author_see",
+      "labelAr": "فهرس جامعة سطيف",
+      "labelEn": "Setif University catalogue"
+    }
+  ],
+  "39": [
+    {
+      "url": "https://torath.gov.eg/book/Book_Dar-Al-Maaref_mwswEp-AltHkym-AltHkym-fY-AlblAd-AlErbyp-jzC-1_1998?isSmartSearch=false&searchText=%D8%A7%D9%84%D9%85%D8%AD%D8%A7%D9%83%D9%85%D9%87+%D8%A7%D9%84%D8%AA%D8%AD%D9%83%D9%8A%D9%85%D9%8A%D9%87",
+      "labelAr": "بطاقة الكتاب على منصة تراث مصر الرقمي",
+      "labelEn": "Egypt Digital Heritage record",
+      "noteAr": "البطاقة تؤكد بيانات الكتاب، لكن المحتوى الرقمي غير متاح حاليًا على المنصة.",
+      "noteEn": "The record confirms the book details, but its digital content is currently unavailable."
+    }
+  ],
+  "48": [
+    {
+      "url": "https://halabi-lp.com/Arabic/Books/ShowBook.aspx?bookid=767",
+      "labelAr": "بيانات الكتاب لدى الحلبي",
+      "labelEn": "Al-Halabi book listing"
+    }
+  ],
+  "56": [
+    {
+      "url": "https://bu.umc.edu.dz/catalogue/index.php?lvl=notice_display&id=8178",
+      "labelAr": "فهرس جامعة قسنطينة",
+      "labelEn": "Constantine University catalogue"
+    },
+    {
+      "url": "https://books.google.com/books?id=_AXWxgEACAAJ",
+      "labelAr": "بيانات Google Books",
+      "labelEn": "Google Books record"
+    }
+  ],
+  "57": [
+    {
+      "url": "https://lib.cihanuniversity.edu.iq/index.php?id=7015&keywords=&p=show_detail",
+      "labelAr": "فهرس جامعة جيهان – سجل لطبعة موسعة",
+      "labelEn": "Cihan University – related edition record",
+      "noteAr": "السجل يصف عنوانًا موسعًا وطبعة 2011؛ تحقق من تطابق الطبعة.",
+      "noteEn": "This record is for an expanded title and 2011 edition; verify the edition."
+    }
+  ],
+  "62": [
+    {
+      "url": "https://library.cco.gov.jo/cgi-bin/koha/opac-detail.pl?biblionumber=2085",
+      "labelAr": "فهرس مكتبة المحكمة الدستورية الأردنية",
+      "labelEn": "Jordan Constitutional Court Library catalogue"
+    },
+    {
+      "url": "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-detail.pl?biblionumber=38326",
+      "labelAr": "فهرس جامعة القاهرة – طبعة أخرى",
+      "labelEn": "Cairo University catalogue – another edition"
+    }
+  ],
+  "64": [
+    {
+      "url": "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=135907",
+      "labelAr": "فهرس مكتبة اتحاد الإمارات",
+      "labelEn": "UAE Federation Library catalogue"
+    }
+  ],
+  "65": [
+    {
+      "url": "https://www.daralnahda.com/book/4072/%D9%85%D8%AF%D9%88%D9%86%D8%A9-%D8%A7%D8%A8%D8%AD%D8%A7%D8%AB-%D9%81%D9%8A-%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D8%A7%D9%84%D8%AE%D8%A7%D8%B5",
+      "labelAr": "صفحة الكتاب لدى دار النهضة",
+      "labelEn": "Dar Al-Nahda publisher page"
+    }
+  ],
+  "66": [
+    {
+      "url": "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-detail.pl?biblionumber=43321&shelfbrowse_itemnumber=54214",
+      "labelAr": "فهرس مكتبة الحقوق – جامعة القاهرة",
+      "labelEn": "Cairo University Faculty of Law catalogue"
+    }
+  ],
+  "67": [
+    {
+      "url": "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=133012",
+      "labelAr": "فهرس مكتبة اتحاد الإمارات",
+      "labelEn": "UAE Federation Library catalogue"
+    }
+  ]
+};
+
 export default async function ReferencesPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const lang = await getLang();
   const params = await searchParams;
@@ -106,27 +298,38 @@ export default async function ReferencesPage({ searchParams }: { searchParams: P
         <button type="submit" className="btn btn-primary btn-sm absolute end-1 top-1/2 -translate-y-1/2">{ar ? "بحث" : "Search"}</button>
       </form>
 
-      <div className="mt-5 rounded-2xl border border-[var(--line)] p-5" style={{ background: "color-mix(in srgb, var(--accent) 11%, var(--bg))" }}>
-        <h2 className="text-[14px] font-extrabold">{ar ? "حالة ملفات PDF المجانية" : "Free PDF availability"}</h2>
-        <p className="mt-2 text-[12.5px] leading-8 text-[var(--muted)]">
-          {ar
-            ? "لم أتحقق حتى الآن من رابط يتيح نسخة PDF كاملة ومجانية من هذه الكتب عبر مصدر يملك حق نشرها أو يصرّح بإتاحتها. لذلك لم أضع روابط تحميل من مواقع مجهولة أو نسخًا ناقصة أو فهارس مكتبات لا توفر الكتاب نفسه. ستضاف روابط التنزيل هنا فقط عند التحقق من اكتمال النسخة ومشروعية إتاحتها."
-            : "No link has yet been verified as a complete, free PDF made available by an authorized source. For that reason, this page does not link to unknown sites, incomplete copies or catalogue records that do not provide the book itself. Download links will be added only after the file's completeness and lawful availability are verified."}
-        </p>
-      </div>
-
       <section className="mt-9">
         <div className="mb-4 flex items-baseline justify-between gap-3">
           <h2 className="section-title">{ar ? "أولًا: التحكيم" : "I. Arbitration"}</h2>
           <span className="text-[12px] font-semibold text-[var(--muted)]">{arbitration.length} / {arbitrationReferences.length}</span>
         </div>
         <ol className="grid gap-2">
-          {arbitration.map((item) => (
-            <li key={item} className="card flex items-start gap-3 p-4">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[var(--primary-soft)] text-[11px] font-extrabold text-[var(--primary)]">{arbitrationReferences.indexOf(item) + 1}</span>
-              <p className="text-[12.5px] leading-8 text-[var(--text)]" dir="rtl">{item}</p>
-            </li>
-          ))}
+          {arbitration.map((item) => {
+            const number = arbitrationReferences.indexOf(item) + 1;
+            const sources = referenceSources[number] ?? [];
+            return (
+              <li key={item} className="card flex items-start gap-3 p-4">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[var(--primary-soft)] text-[11px] font-extrabold text-[var(--primary)]">{number}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[12.5px] leading-8 text-[var(--text)]" dir="rtl">{item}</p>
+                  {sources.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {sources.map((source) => (
+                        <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-lg border border-[var(--sky-soft)] bg-[var(--sky-soft)] px-2.5 py-1 text-[10.5px] font-bold text-[var(--secondary)] hover:border-[var(--sky)]">
+                          {ar ? source.labelAr : source.labelEn}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  {sources.some((source) => ar ? source.noteAr : source.noteEn) && (
+                    <p className="mt-2 text-[10.5px] leading-6 text-[var(--muted)]">
+                      {sources.filter((source) => ar ? source.noteAr : source.noteEn).map((source) => ar ? source.noteAr : source.noteEn).join(" ")}
+                    </p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </ol>
         {arbitration.length === 0 && <p className="card mt-3 p-5 text-sm text-[var(--muted)]">{ar ? "لا توجد نتائج مطابقة." : "No matching references."}</p>}
       </section>
@@ -137,12 +340,32 @@ export default async function ReferencesPage({ searchParams }: { searchParams: P
           <span className="text-[12px] font-semibold text-[var(--muted)]">{privateLaw.length} / {privateInternationalLawReferences.length}</span>
         </div>
         <ol className="grid gap-2">
-          {privateLaw.map((item) => (
-            <li key={item} className="card flex items-start gap-3 p-4">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[var(--primary-soft)] text-[11px] font-extrabold text-[var(--primary)]">{privateInternationalLawReferences.indexOf(item) + 61}</span>
-              <p className="text-[12.5px] leading-8 text-[var(--text)]" dir="rtl">{item}</p>
-            </li>
-          ))}
+          {privateLaw.map((item) => {
+            const number = privateLawReferences.indexOf(item) + 61;
+            const sources = referenceSources[number] ?? [];
+            return (
+              <li key={item} className="card flex items-start gap-3 p-4">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[var(--primary-soft)] text-[11px] font-extrabold text-[var(--primary)]">{number}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[12.5px] leading-8 text-[var(--text)]" dir="rtl">{item}</p>
+                  {sources.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {sources.map((source) => (
+                        <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-lg border border-[var(--sky-soft)] bg-[var(--sky-soft)] px-2.5 py-1 text-[10.5px] font-bold text-[var(--secondary)] hover:border-[var(--sky)]">
+                          {ar ? source.labelAr : source.labelEn}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  {sources.some((source) => ar ? source.noteAr : source.noteEn) && (
+                    <p className="mt-2 text-[10.5px] leading-6 text-[var(--muted)]">
+                      {sources.filter((source) => ar ? source.noteAr : source.noteEn).map((source) => ar ? source.noteAr : source.noteEn).join(" ")}
+                    </p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </ol>
         {privateLaw.length === 0 && <p className="card mt-3 p-5 text-sm text-[var(--muted)]">{ar ? "لا توجد نتائج مطابقة." : "No matching references."}</p>}
       </section>
