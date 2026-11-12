@@ -56,6 +56,7 @@ export async function SectionPage({
   });
 
   const Icon = ICONS[slug] ?? Files;
+  const accent = slug === "laws" ? "var(--secondary)" : slug === "books" ? "var(--accent)" : "var(--primary)";
   const total = allInSection.length;
 
   const buildHref = (patch: Record<string, string | undefined>) => {
@@ -73,7 +74,7 @@ export async function SectionPage({
       <section
         className="relative overflow-hidden border-b border-[var(--line)]"
         style={{
-          background: `linear-gradient(135deg, color-mix(in srgb, ${section.accent} 12%, var(--bg)), var(--bg) 60%)`,
+          background: `linear-gradient(135deg, color-mix(in srgb, ${accent} 12%, var(--bg)), var(--bg) 60%)`,
         }}
       >
         <div className="container-x py-9 sm:py-11">
@@ -88,9 +89,9 @@ export async function SectionPage({
             <span
               className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border"
               style={{
-                background: `color-mix(in srgb, ${section.accent} 14%, var(--card))`,
-                color: section.accent,
-                borderColor: `color-mix(in srgb, ${section.accent} 25%, var(--line))`,
+                background: `color-mix(in srgb, ${accent} 14%, var(--card))`,
+                color: accent,
+                borderColor: `color-mix(in srgb, ${accent} 25%, var(--line))`,
               }}
             >
               <Icon className="h-7 w-7" aria-hidden="true" />

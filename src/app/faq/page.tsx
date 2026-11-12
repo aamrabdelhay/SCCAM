@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { HelpCircle } from "lucide-react";
 import { getLang } from "@/lib/server-lang";
 import { getFaqs } from "@/lib/queries";
@@ -22,14 +21,7 @@ export default async function FaqPage() {
         <div className="mt-6">
           <FaqAccordion items={faqs} lang={lang} />
         </div>
-        <div className="mt-5 flex gap-2">
-          <Link href="/contact" className="btn btn-primary">
-            {t(lang, "askAdmin")}
-          </Link>
-          <Link href="/search" className="btn btn-outline">
-            {t(lang, "searchGlobal")}
-          </Link>
-        </div>
+
       </div>
     </div>
   );

@@ -11,16 +11,14 @@ import {
   Facebook,
   Instagram,
   Linkedin,
-  Sun,
-  Moon,
   Languages,
   Archive,
   BookOpen,
   FileText,
   HelpCircle,
   Bookmark,
-  Tag,
-  History,
+  Compass,
+  Globe,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { SearchBox } from "@/components/SearchBox";
@@ -100,15 +98,17 @@ export function HeaderClient({
     { href: "/laws", label: t(lang, "navLaws") },
     { href: "/books", label: t(lang, "navBooks") },
     { href: "/search", label: t(lang, "navSearch") },
-    { href: "/contact", label: t(lang, "navContact") },
   ];
 
   const archiveLinks = [
     { href: "/archive", label: t(lang, "archiveTitle"), icon: Archive },
     { href: "/clarifications", label: t(lang, "clarificationsTitle"), icon: HelpCircle },
-    { href: "/changelog", label: t(lang, "changelogTitle"), icon: History },
-    { href: "/glossary", label: t(lang, "glossaryTitle"), icon: Tag },
     { href: "/library", label: t(lang, "navLibrary"), icon: Bookmark },
+    { href: "/memoranda", label: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", icon: FileText },
+    { href: "/research-platforms", label: lang === "ar" ? "منصات البحث" : "Research platforms", icon: Globe },
+    { href: "/references", label: lang === "ar" ? "المراجع" : "References", icon: BookOpen },
+    { href: "/guidelines", label: lang === "ar" ? "الإرشادات" : "Guidelines", icon: Compass },
+    { href: "/faq", label: t(lang, "faqTitle"), icon: HelpCircle },
   ];
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
@@ -237,7 +237,6 @@ export function HeaderClient({
           <div className="mx-1 hidden h-6 w-px bg-[var(--line)] md:block" />
 
           <LangToggle lang={lang} />
-          <ThemeToggle lang={lang} />
         </div>
       </div>
 
@@ -298,35 +297,6 @@ export function HeaderClient({
         </div>
       )}
     </header>
-  );
-}
-
-function ThemeToggle({ lang }: { lang: Lang }) {
-  const [dark, setDark] = useState(false);
-  useEffect(() => {
-    setDark(document.documentElement.classList.contains("dark"));
-  }, []);
-  function toggle() {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    try {
-      localStorage.setItem("sccam:theme", next ? "dark" : "light");
-    } catch {
-      /* ignore */
-    }
-  }
-  return (
-    <button
-      type="button"
-      onClick={toggle}
-      className="btn btn-ghost px-2"
-      aria-label={t(lang, "themeToggle")}
-      aria-pressed={dark}
-      title={t(lang, "themeToggle")}
-    >
-      {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-    </button>
   );
 }
 

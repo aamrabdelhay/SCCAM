@@ -38,10 +38,8 @@ export function Logo({
         <span className="font-display truncate text-[15px] font-extrabold tracking-tight text-[var(--text)]">
           {siteName}
         </span>
-        {!compact && (
-          <span className="truncate text-[10.5px] font-medium text-[var(--muted)]">
-            {subtitle ?? (lang === "ar" ? "غير رسمي · من إعداد الطلاب" : "Unofficial · student-run")}
-          </span>
+        {!compact && subtitle && (
+          <span className="truncate text-[10.5px] font-medium text-[var(--muted)]">{subtitle}</span>
         )}
       </span>
     </Link>
