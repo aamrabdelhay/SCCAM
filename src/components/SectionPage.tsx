@@ -40,13 +40,16 @@ export async function SectionPage({
   const importance = typeof params.i === "string" ? params.i : undefined;
   const year = typeof params.year === "string" ? params.year : undefined;
 
-  const [categories, years, allInSection] = await Promise.all([
+  const [categories, years, rawInSection] = await Promise.all([
     getCategoriesWithCounts(section.id),
     getYears(),
     listFiles({ sectionId: section.id, limit: 1000 }),
   ]);
+  const isVirtualBookDestination = (file: (typeof rawInSection)[number]) =>
+    file.tags.includes("__upload_references") || file.tags.includes("__upload_memoranda");
+  const allInSection = slug === "books" ? rawInSection.filter((file) => !isVirtualBookDestination(file)) : rawInSection;
   const activeCategory = categories.find((c) => c.slug === categorySlug);
-  const files = await listFiles({
+  const queriedFiles = await listFiles({
     sectionId: section.id,
     categoryId: activeCategory?.id,
     importance,
@@ -54,8 +57,12 @@ export async function SectionPage({
     sort,
     limit: 300,
   });
+  const files = slug === "books" ? queriedFiles.filter((file) => !isVirtualBookDestination(file)) : queriedFiles;
 
   const Icon = ICONS[slug] ?? Files;
+  const sectionTitle = slug === "books"
+    ? (lang === "ar" ? "الكتب" : "Books")
+    : pickText(lang, section.name_ar, section.name_en);
   const accent = slug === "laws" ? "var(--sky)" : slug === "books" ? "var(--accent)" : "var(--primary)";
   const total = allInSection.length;
 
@@ -72,6 +79,7 @@ export async function SectionPage({
   return (
     <>
       <section
+        data-motion-reveal
         className="relative overflow-hidden border-b border-[var(--line)]"
         style={{
           background: `linear-gradient(135deg, color-mix(in srgb, ${accent} 12%, var(--bg)), var(--bg) 60%)`,
@@ -83,7 +91,7 @@ export async function SectionPage({
               {t(lang, "navHome")}
             </Link>
             <span className="mx-1.5">/</span>
-            <span aria-current="page">{pickText(lang, section.name_ar, section.name_en)}</span>
+            <span aria-current="page">{sectionTitle}</span>
           </nav>
           <div className="mt-4 flex flex-wrap items-start gap-4">
             <span
@@ -98,7 +106,7 @@ export async function SectionPage({
             </span>
             <div className="min-w-0 flex-1">
               <h1 className="font-display text-[26px] font-extrabold leading-tight sm:text-[32px]">
-                {pickText(lang, section.name_ar, section.name_en)}
+                {sectionTitle}
               </h1>
               <p className="mt-1.5 max-w-2xl text-[13.5px] leading-relaxed text-[var(--muted)]">
                 {pickText(lang, section.description_ar, section.description_en) || t(lang, DESC[slug] ?? "sectionCaseDesc")}
@@ -179,7 +187,7 @@ export async function SectionPage({
           {importance ? ` · ${t(lang, importance as "essential")}` : ""}
         </p>
 
-        <div className="mt-3 space-y-2.5">
+        <div className="mt-3 space-y-2.5" data-motion-stagger>
           {files.map((f) => (
             <FileCard key={f.id} file={f} lang={lang} variant="row" />
           ))}

@@ -24,7 +24,7 @@ export async function SiteHeader({
       lang={lang}
       siteName="SCCAM"
       socials={socials}
-      sections={sections.map((s) => ({ slug: s.slug, name: lang === "ar" ? s.name_ar : s.name_en }))}
+      sections={sections.map((s) => ({ slug: s.slug, name: s.slug === "books" ? (lang === "ar" ? "الكتب" : "Books") : (lang === "ar" ? s.name_ar : s.name_en) }))}
     />
   );
 }

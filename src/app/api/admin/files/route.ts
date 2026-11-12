@@ -3,7 +3,8 @@ import bcrypt from "bcryptjs";
 import { newId, nowIso, one, run } from "@/lib/db";
 import { adminGuard, bool, clean, int, validateFile } from "@/lib/admin-api";
 import { storeAndProcess } from "@/lib/process";
-import { addChangelog } from "@/lib/queries";
+import { addChangelog, ensureCoreSections, getSectionBySlug } from "@/lib/queries";
+import { uploadDestination } from "@/lib/upload-destinations";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,9 +21,16 @@ export async function POST(req: NextRequest) {
   const titleEn = clean(form.get("titleEn"), 220);
   if (!titleAr && !titleEn) return Response.json({ error: "title-required" }, { status: 400 });
 
-  const sectionId = clean(form.get("sectionId"), 40);
-  const section = await one<{ id: string }>("SELECT id FROM sections WHERE id = ?", [sectionId]);
+  await ensureCoreSections();
+  const destinationValue = clean(form.get("destination"), 30);
+  const destination = uploadDestination(destinationValue);
+  const legacySectionId = clean(form.get("sectionId"), 40);
+  const section = destination
+    ? await getSectionBySlug(destination.sectionSlug)
+    : await one<{ id: string }>("SELECT id FROM sections WHERE id = ?", [legacySectionId]);
   if (!section) return Response.json({ error: "section-required" }, { status: 400 });
+  const sectionId = section.id;
+  const tags = [clean(form.get("tags"), 400), destination?.tags ?? ""].filter(Boolean).join(" ").trim();
 
   const file = form.get("file");
   if (file instanceof File && file.size > 0) {
@@ -52,7 +60,7 @@ export async function POST(req: NextRequest) {
       clean(form.get("descriptionEn"), 2000),
       sectionId,
       clean(form.get("categoryId"), 40) || null,
-      clean(form.get("tags"), 400),
+      tags,
       clean(form.get("editionYear"), 20),
       clean(form.get("docDate"), 40) || null,
       ["essential", "important", "reference"].includes(clean(form.get("importance"), 20)) ? clean(form.get("importance"), 20) : "reference",

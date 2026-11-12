@@ -5,6 +5,7 @@ import { getSiteSettings, getSections } from "@/lib/queries";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { MotionSystem } from "@/components/MotionSystem";
 // Self-hosted variable fonts (no external CDN — required for offline/PWA).
 import "@fontsource-variable/cairo";
 import "@fontsource-variable/inter";
@@ -60,6 +61,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           {t(lang, "skipToContent")}
         </a>
+        <MotionSystem />
         <SiteHeader lang={lang} settings={settings} sections={sections} />
         <main id="main" className="min-h-[60vh] min-w-0 flex-1 w-full">
           {children}

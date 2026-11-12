@@ -1,5 +1,7 @@
 import { BookMarked, Search } from "lucide-react";
 import { getLang } from "@/lib/server-lang";
+import { listFiles } from "@/lib/queries";
+import { FileCard } from "@/components/FileCard";
 
 export const metadata = { title: "References" };
 
@@ -136,6 +138,9 @@ export default async function ReferencesPage({ searchParams }: { searchParams: P
   const ar = lang === "ar";
   const arbitration = arbitrationReferences.filter((item) => !q || item.toLowerCase().includes(q));
   const privateLaw = privateInternationalLawReferences.filter((item) => !q || item.toLowerCase().includes(q));
+  const uploadedReferences = (await listFiles({ limit: 1000 }))
+    .filter((file) => file.tags.includes("__upload_references"))
+    .filter((file) => !q || [file.title_ar, file.title_en, file.description_ar, file.description_en, file.tags].join(" ").toLowerCase().includes(q));
 
   return (
     <div className="container-x py-10">
@@ -165,12 +170,24 @@ export default async function ReferencesPage({ searchParams }: { searchParams: P
           : "Source links beside titles lead to library catalogues, publisher pages or bibliographic records for edition verification."}
       </p>
 
+      {uploadedReferences.length > 0 && (
+        <section className="mt-8" data-motion-reveal>
+          <div className="mb-4 flex items-baseline justify-between gap-3">
+            <h2 className="section-title">{ar ? "المراجع المضافة إلى المكتبة" : "Uploaded library references"}</h2>
+            <span className="text-[12px] font-semibold text-[var(--muted)]">{uploadedReferences.length} {ar ? "ملف" : "files"}</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2" data-motion-stagger>
+            {uploadedReferences.map((file) => <FileCard key={file.id} file={file} lang={lang} showSection />)}
+          </div>
+        </section>
+      )}
+
       <section className="mt-9">
         <div className="mb-4 flex items-baseline justify-between gap-3">
           <h2 className="section-title">{ar ? "أولًا: التحكيم" : "I. Arbitration"}</h2>
           <span className="text-[12px] font-semibold text-[var(--muted)]">{arbitration.length} / {arbitrationReferences.length}</span>
         </div>
-        <ol className="grid gap-2">
+        <ol className="grid gap-2" data-motion-stagger>
           {arbitration.map((item) => {
             const sourceLinks = referenceSources["a-" + arbitrationReferences.indexOf(item)] ?? [];
             return (
@@ -188,7 +205,7 @@ export default async function ReferencesPage({ searchParams }: { searchParams: P
         {arbitration.length === 0 && <p className="card mt-3 p-5 text-sm text-[var(--muted)]">{ar ? "لا توجد نتائج مطابقة." : "No matching references."}</p>}
       </section>
 
-      <section className="mt-10">
+      <section className="mt-10" data-motion-reveal>
         <div className="mb-4 flex items-baseline justify-between gap-3">
           <h2 className="section-title">{ar ? "ثانيًا: القانون الدولي الخاص" : "II. Private international law"}</h2>
           <span className="text-[12px] font-semibold text-[var(--muted)]">{privateLaw.length} / {privateInternationalLawReferences.length}</span>

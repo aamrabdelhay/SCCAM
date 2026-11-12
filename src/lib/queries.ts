@@ -32,11 +32,74 @@ export function publishedPredicate(alias = "f"): { sql: string; args: string[] }
   };
 }
 
+
+const CORE_SECTIONS = [
+  {
+    id: "sec_case",
+    slug: "case",
+    name_ar: "القضية",
+    name_en: "The Case",
+    description_ar: "ملف القضية والمستندات المرتبطة بها.",
+    description_en: "The case file and its supporting documents.",
+    accent: "#0C873E",
+    icon: "scale",
+    sort_order: 10,
+  },
+  {
+    id: "sec_laws",
+    slug: "laws",
+    name_ar: "القوانين",
+    name_en: "Laws & Rules",
+    description_ar: "القوانين والاتفاقيات واللوائح والقواعد.",
+    description_en: "Legislation, conventions, regulations and rules.",
+    accent: "#2975B2",
+    icon: "book-open",
+    sort_order: 20,
+  },
+  {
+    id: "sec_books",
+    slug: "books",
+    name_ar: "الكتب",
+    name_en: "Books",
+    description_ar: "الكتب والمراجع والمؤلفات القانونية.",
+    description_en: "Books and legal publications.",
+    accent: "#EE940F",
+    icon: "library",
+    sort_order: 30,
+  },
+] as const;
+
+/** Ensure the three core destinations exist without adding sample files or content. */
+export async function ensureCoreSections(): Promise<void> {
+  await batch(
+    CORE_SECTIONS.map((section) => ({
+      sql: `INSERT INTO sections
+        (id, slug, name_ar, name_en, description_ar, description_en, accent, icon, sort_order, created_at)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+        ON CONFLICT(slug) DO NOTHING`,
+      args: [
+        section.id,
+        section.slug,
+        section.name_ar,
+        section.name_en,
+        section.description_ar,
+        section.description_en,
+        section.accent,
+        section.icon,
+        section.sort_order,
+        nowIso(),
+      ],
+    })),
+  );
+}
+
 export async function getSections(): Promise<SectionRow[]> {
+  await ensureCoreSections();
   return all<SectionRow>("SELECT * FROM sections ORDER BY sort_order ASC, created_at ASC");
 }
 
 export async function getSectionBySlug(slug: string): Promise<SectionRow | null> {
+  await ensureCoreSections();
   return one<SectionRow>("SELECT * FROM sections WHERE slug = ?", [slug]);
 }
 
