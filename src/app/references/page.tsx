@@ -341,7 +341,7 @@ export default async function ReferencesPage({ searchParams }: { searchParams: P
         </div>
         <ol className="grid gap-2">
           {privateLaw.map((item) => {
-            const number = privateLawReferences.indexOf(item) + 61;
+            const number = privateInternationalLawReferences.indexOf(item) + 61;
             const sources = referenceSources[number] ?? [];
             return (
               <li key={item} className="card flex items-start gap-3 p-4">
