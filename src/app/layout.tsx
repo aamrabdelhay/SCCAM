@@ -4,7 +4,6 @@ import { getLang } from "@/lib/server-lang";
 import { getSiteSettings, getSections } from "@/lib/queries";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { TopBanner } from "@/components/TopBanner";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 // Self-hosted variable fonts (no external CDN — required for offline/PWA).
 import "@fontsource-variable/cairo";
@@ -45,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#238B46",
+  themeColor: "#0C4871",
   width: "device-width",
   initialScale: 1,
 };
@@ -62,12 +61,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           {t(lang, "skipToContent")}
         </a>
-        <TopBanner lang={lang} settings={settings} />
         <SiteHeader lang={lang} settings={settings} sections={sections} />
         <main id="main" className="min-h-[60vh] min-w-0 flex-1 w-full">
           {children}
         </main>
-        <SiteFooter lang={lang} settings={settings} sections={sections} />
+        <SiteFooter lang={lang} sections={sections} />
         <ServiceWorkerRegister />
       </body>
     </html>

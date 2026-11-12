@@ -1,26 +1,23 @@
 import Link from "next/link";
 import { ArrowUp, BookOpen, FileArchive, Globe2, LockKeyhole, Search } from "lucide-react";
-import type { Lang, SectionRow, SettingsMap } from "@/lib/types";
+import type { Lang, SectionRow } from "@/lib/types";
 import { t } from "@/lib/i18n";
 import { LogoMark } from "./Logo";
 
 export function SiteFooter({
   lang,
-  settings,
   sections,
 }: {
   lang: Lang;
-  settings: SettingsMap;
   sections: SectionRow[];
 }) {
   const ar = lang === "ar";
-  const siteName = ar ? settings.site_name_ar : settings.site_name_en;
+  const siteName = "SCCAM";
   const primaryLinks = [
     { href: "/case", label: t(lang, "navCase") },
     { href: "/laws", label: t(lang, "navLaws") },
     { href: "/books", label: t(lang, "navBooks") },
     { href: "/search", label: t(lang, "navSearch"), icon: Search },
-    { href: "/archive", label: t(lang, "navArchive"), icon: FileArchive },
     ...sections.filter((section) => !["case", "laws", "books"].includes(section.slug)).map((section) => ({ href: "/" + section.slug, label: ar ? section.name_ar : section.name_en })),
   ];
   const resourceLinks = [
@@ -29,14 +26,11 @@ export function SiteFooter({
     { href: "/guidelines", label: ar ? "الإرشادات" : "Guidelines" },
     { href: "/references", label: ar ? "المراجع" : "References" },
     { href: "/research-platforms", label: ar ? "منصات البحث" : "Research platforms", icon: Globe2 },
-    { href: "/library", label: ar ? "مكتبتي" : "My library" },
   ];
 
   return (
-    <footer className="no-print mt-auto border-t-4 border-transparent text-white" style={{
-      background: "linear-gradient(112deg, #0C4871 0%, #083B60 58%, #07334F 100%)",
-      borderImage: "linear-gradient(90deg, #43A53C 0%, #0C873E 20%, #EE940F 42%, #F4B042 58%, #2975B2 78%, #0C4871 100%) 1",
-    }}>
+    <footer className="no-print mt-auto text-white" style={{ background: "linear-gradient(112deg, #0C4871 0%, #083B60 58%, #07334F 100%)" }}>
+      <div className="brand-spectrum h-1.5" aria-hidden="true" />
       <div className="container-x py-9 sm:py-11">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1.2fr]">
           <div className="min-w-0">
@@ -46,12 +40,8 @@ export function SiteFooter({
               </span>
               <div className="min-w-0">
                 <p className="font-display truncate text-[15px] font-extrabold">{siteName}</p>
-                <p className="mt-0.5 text-[10.5px] font-medium text-white/60">{ar ? "مكتبة البحث والتحكيم الدولي" : "International law and arbitration research library"}</p>
               </div>
             </div>
-            <p className="mt-4 max-w-sm text-[12.5px] leading-7 text-white/70">
-              {ar ? settings.tagline_ar : settings.tagline_en}
-            </p>
             <Link href="/admin" className="mt-5 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-extrabold shadow-sm transition-transform hover:-translate-y-0.5" style={{ background: "#F4B042", color: "#0C4871" }}>
               <LockKeyhole className="h-4 w-4" aria-hidden="true" />
               {ar ? "دخول لوحة الإدارة" : "Open admin panel"}
@@ -63,7 +53,7 @@ export function SiteFooter({
         </div>
 
         <div className="mt-8 flex flex-col gap-3 border-t border-white/15 pt-5 text-[11px] text-white/60 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} {siteName} · {ar ? "المصادر مرتبطة بجهاتها الأصلية." : "Sources are linked to their original publishers and institutions."}</p>
+          <p>© {new Date().getFullYear()} {siteName}</p>
           <a href="#main" className="inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold text-white/80 transition-colors hover:bg-white/10 hover:text-white">
             <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
             {ar ? "أعلى الصفحة" : "Back to top"}

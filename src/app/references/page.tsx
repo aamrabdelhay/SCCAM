@@ -92,6 +92,10 @@ const referenceSources: Record<string, { label: string; url: string; note?: stri
   "a-26": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=135905&query_desc=", note: "بيانات الطبعة المسجلة 2003." }],
   "a-31": [{ label: "فهرس مكتبة كلية الحقوق – جامعة القاهرة", url: "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-detail.pl?biblionumber=28028", note: "الفهرس يعرض طبعة 1994؛ القائمة تذكر 1997." }],
   "a-43": [{ label: "فهرس مكتبة ديوان الجريدة الرسمية", url: "https://library.ogb.gov.ps/records/index/1/756" }],
+  "a-47": [
+    { label: "تحميل PDF مباشر — مكتبة كلية الحقوق، جامعة القاهرة", url: "https://fll.law.cu.edu.eg/fulltext/bks/B12-00010.pdf", note: "ملف PDF متاح من رابط إلكتروني مسجل في الفهرس الرسمي لجامعة القاهرة." },
+    { label: "سجل الفهرسة الرسمي — جامعة القاهرة", url: "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-MARCdetail.pl?biblionumber=28402", note: "السجل يثبت المؤلفين والطبعة الأولى وبيانات 1998، ويعرض رابط PDF في حقل الإتاحة الإلكترونية." },
+  ],
   "a-48": [{ label: "فهرس مكتبة ديوان الجريدة الرسمية", url: "https://library.ogb.gov.ps/records/index/1/1131" }],
   "a-50": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=132146&shelfbrowse_itemnumber=182939", note: "السجل المتاح يذكر إصدار 1997." }],
   "a-59": [{ label: "صفحة الناشر – منشورات الحلبي الحقوقية", url: "https://halabi-lp.com/arabic/books/ShowBook.aspx?BookID=564" }],
@@ -99,10 +103,11 @@ const referenceSources: Record<string, { label: string; url: string; note?: stri
   "p-3": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=135907&query_desc=" }],
   "p-5": [{ label: "فهرس مكتبة كلية الحقوق – جامعة القاهرة", url: "https://fll.law.cu.edu.eg/cgi-bin/koha/opac-detail.pl?biblionumber=43321" }],
   "a-10": [{ label: "فهرس المكتبة البرلمانية الجزائرية", url: "https://bibliotheque.apn.dz/index.php?id=97&lvl=etagere_see&nb_per_page_custom=25&nbr_lignes=530&page=14" }],
-  "a-11": [{ label: "فهرس المكتبة المركزية للجامعة الإسلامية", url: "https://iulibrary.com/" }],
+  "a-11": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=147171", note: "الفهرس يسجل طبعة 2005؛ القائمة الواردة هنا تذكر 2006." }],
   "a-12": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=169226" }],
-  "a-20": [{ label: "فهرس جامعة سطيف 2", url: "https://cfdsp.univ-setif2.dz/opac_css/index.php?dcote=&id=27&lcote=0&location=9&lvl=section_see&main=&nb_per_page_custom=25&nbr_lignes=13310&nc=0&page=530&plettreaut=&ssub=0" }],
+  "a-20": [{ label: "فهرس مكتبة كلية الحقوق — جامعة المسيلة", url: "https://fac.umc.edu.dz/droit/bib/pagesbib/livre.php?id_livre=6582", note: "سجل ببليوغرافي للكتاب؛ راجع بيانات السنة في السجل عند المقارنة بالطبعة المذكورة في القائمة." }],
   "a-22": [{ label: "فهرس مكتبة اتحاد الإمارات", url: "https://library.ecssr.ae/cgi-bin/koha/opac-detail.pl?biblionumber=135941" }],
+  "a-25": [{ label: "فهرس مكتبة عبد الحميد شومان", url: "https://library.shoman.org.jo/bib/69748" }],
   "a-53": [{ label: "فهرس مكتبة CRCICA", url: "https://library.crcica.org/cgi-bin/koha/opac-detail.pl?biblionumber=3260" }],
   "p-4": [{ label: "صفحة الناشر – دار النهضة العربية", url: "https://www.daralnahda.com/book/4072/%D9%85%D8%AF%D9%88%D9%86%D8%A9-%D8%A7%D8%A8%D8%AD%D8%A7%D8%AB-%D9%81%D9%8A-%D8%A7%D9%84%D9%82%D8%A7%D9%86%D9%88%D9%86-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D8%A7%D9%84%D8%AE%D8%A7%D8%B5" }],
 };
@@ -135,8 +140,8 @@ export default async function ReferencesPage({ searchParams }: { searchParams: P
         </h1>
         <p className="mt-3 text-[13.5px] leading-8 text-[var(--muted)]">
           {ar
-            ? "قائمة المراجع الإضافية المتخصصة في التحكيم والقانون الدولي الخاص، مع بيان واضح لحالة روابط النسخ الرقمية."
-            : "A specialist bibliography on arbitration and private international law, with a clear indication of verified digital-copy availability."}
+            ? "قائمة مراجع متخصصة في التحكيم والقانون الدولي الخاص، مع روابط للفهرسة والمصادر المؤسسية والنسخ الرقمية المتاحة."
+            : "A specialist bibliography on arbitration and private international law, with links to library catalogues, institutional sources and available digital copies."}
         </p>
       </header>
 

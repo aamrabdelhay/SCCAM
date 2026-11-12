@@ -1,23 +1,20 @@
 {
-  "name": "Arbitration Moot Library — unofficial",
-  "short_name": "Arb Library",
-  "description": "Unofficial community library for the international commercial arbitration moot: case file, clarifications, laws, rules and books.",
+  "name": "SCCAM — مكتبة التحكيم والبحث القانوني",
+  "short_name": "SCCAM",
+  "description": "مكتبة بحثية للمواد القانونية والمراجع وأدوات البحث في التحكيم التجاري الدولي والقانون الدولي الخاص.",
   "id": "/",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait-primary",
-  "background_color": "#FFFFFF",
-  "theme_color": "#0B3D2E",
+  "background_color": "#FAFCFD",
+  "theme_color": "#0C4871",
   "lang": "ar",
   "dir": "rtl",
   "categories": ["education", "books", "reference"],
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ],
   "shortcuts": [
     { "name": "The Case", "url": "/case" },

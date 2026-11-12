@@ -100,9 +100,7 @@ export function HeaderClient({
   ];
 
   const archiveLinks = [
-    { href: "/archive", label: t(lang, "archiveTitle"), icon: Archive },
     { href: "/previous-editions", label: lang === "ar" ? "أرشيف الإصدارات السابقة" : "Previous editions", icon: Archive },
-    { href: "/library", label: t(lang, "navLibrary"), icon: Bookmark },
     { href: "/memoranda", label: lang === "ar" ? "أفضل المذكرات" : "Best memoranda", icon: FileText },
     { href: "/guidelines", label: lang === "ar" ? "الإرشادات" : "Guidelines", icon: Compass },
     { href: "/research-platforms", label: lang === "ar" ? "منصات البحث" : "Research platforms", icon: Globe },
@@ -133,7 +131,7 @@ export function HeaderClient({
 
         <Logo lang={lang} siteName={siteName} />
 
-        <nav aria-label={lang === "ar" ? "التنقل الرئيسي" : "Main navigation"} className="hidden items-center gap-0.5">
+        <nav aria-label={lang === "ar" ? "التنقل الرئيسي" : "Main navigation"} className="hidden items-center gap-0.5 xl:flex">
           {nav.slice(0, 4).map((item) => (
             <Link
               key={item.href}
@@ -164,7 +162,7 @@ export function HeaderClient({
                 archiveOpen ? "text-[var(--primary)] dark:text-[var(--accent)]" : "text-[var(--muted)] hover:text-[var(--text)]",
               )}
             >
-              {t(lang, "navArchive")}
+              {lang === "ar" ? "موارد الباحث" : "Research resources"}
               <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", archiveOpen && "rotate-180")} />
             </button>
             {archiveOpen && (
@@ -270,7 +268,7 @@ export function HeaderClient({
               </Link>
             ))}
             <div className="my-2 h-px bg-[var(--line)]" />
-            {sections.map((s) => (
+            {sections.filter((s) => !["case", "laws", "books"].includes(s.slug)).map((s) => (
               <Link
                 key={s.slug}
                 href={`/${s.slug}`}
