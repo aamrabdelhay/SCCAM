@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUp, BookOpen, FileArchive, Globe2, LockKeyhole, Search } from "lucide-react";
+import { ArrowUp, BookOpen, Globe2, LockKeyhole, Search } from "lucide-react";
 import type { Lang, SectionRow } from "@/lib/types";
 import { t } from "@/lib/i18n";
 import { LogoMark } from "./Logo";

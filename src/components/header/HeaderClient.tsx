@@ -15,7 +15,6 @@ import {
   Archive,
   BookOpen,
   FileText,
-  Bookmark,
   Compass,
   Globe,
 } from "lucide-react";
