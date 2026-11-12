@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUp, BookOpen, FileArchive, FileText, Globe2, LockKeyhole, Search } from "lucide-react";
+import { ArrowUp, BookOpen, FileArchive, Globe2, LockKeyhole, Search } from "lucide-react";
 import type { Lang, SectionRow, SettingsMap } from "@/lib/types";
 import { t } from "@/lib/i18n";
 import { LogoMark } from "./Logo";
@@ -21,6 +21,7 @@ export function SiteFooter({
     { href: "/books", label: t(lang, "navBooks") },
     { href: "/search", label: t(lang, "navSearch"), icon: Search },
     { href: "/archive", label: t(lang, "navArchive"), icon: FileArchive },
+    ...sections.filter((section) => !["case", "laws", "books"].includes(section.slug)).map((section) => ({ href: "/" + section.slug, label: ar ? section.name_ar : section.name_en })),
   ];
   const resourceLinks = [
     { href: "/previous-editions", label: ar ? "أرشيف الإصدارات السابقة" : "Previous editions" },
