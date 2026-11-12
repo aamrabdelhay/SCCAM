@@ -22,6 +22,7 @@ export function FileCard({
   const title = pickText(lang, file.title_ar, file.title_en);
   const description = pickText(lang, file.description_ar, file.description_en);
   const sectionName = pickText(lang, file.section_name_ar, file.section_name_en);
+  const sectionColor = file.section_slug === "laws" ? "var(--secondary)" : file.section_slug === "books" ? "var(--accent)" : "var(--primary)";
   const categoryName = file.category_name_ar ? pickText(lang, file.category_name_ar, file.category_name_en) : null;
   const Arrow = lang === "ar" ? ArrowLeft : ArrowRight;
   const badges = (
@@ -36,7 +37,7 @@ export function FileCard({
 
   const meta = (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-[var(--muted)]">
-      {showSection && <SectionPill name={sectionName} accent={file.section_accent} lang={lang} />}
+      {showSection && <SectionPill name={sectionName} accent={sectionColor} lang={lang} />}
       {categoryName && <span className="font-medium">{categoryName}</span>}
       <span className="inline-flex items-center gap-1">
         <Layers className="h-3 w-3" aria-hidden="true" />
@@ -59,7 +60,7 @@ export function FileCard({
       >
         <span
           className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-xl"
-          style={{ background: `color-mix(in srgb, ${file.section_accent} 12%, transparent)`, color: file.section_accent }}
+          style={{ background: `color-mix(in srgb, ${sectionColor} 12%, transparent)`, color: sectionColor }}
         >
           <FormatIcon mime={file.mime} className="h-5 w-5" />
         </span>
@@ -86,7 +87,7 @@ export function FileCard({
       <div className="flex items-start justify-between gap-2">
         <span
           className="grid h-11 w-11 place-items-center rounded-xl"
-          style={{ background: `color-mix(in srgb, ${file.section_accent} 12%, transparent)`, color: file.section_accent }}
+          style={{ background: `color-mix(in srgb, ${sectionColor} 12%, transparent)`, color: sectionColor }}
         >
           <FormatIcon mime={file.mime} className="h-5 w-5" />
         </span>
@@ -107,7 +108,7 @@ export function FileMiniCard({ file, lang }: { file: FileWithMeta; lang: Lang })
     <Link href={`/file/${file.id}`} className="group flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-[var(--surface)]">
       <span
         className="grid h-9 w-9 shrink-0 place-items-center rounded-lg"
-        style={{ background: `color-mix(in srgb, ${file.section_accent} 12%, transparent)`, color: file.section_accent }}
+        style={{ background: `color-mix(in srgb, ${sectionColor} 12%, transparent)`, color: sectionColor }}
       >
         <FormatIcon mime={file.mime} />
       </span>
