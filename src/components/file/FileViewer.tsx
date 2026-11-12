@@ -8,7 +8,6 @@ import {
   Maximize2,
   Minimize2,
   PanelLeft,
-  Moon,
   Search,
   ChevronUp,
   ChevronDown,
@@ -75,7 +74,6 @@ export function FileViewer({
   const [zoom, setZoom] = useState(1);
   const [fitWidth, setFitWidth] = useState(true);
   const [containerWidth, setContainerWidth] = useState(0);
-  const [night, setNight] = useState(false);
   const [thumbsOpen, setThumbsOpen] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(Boolean(initialQuery));
@@ -484,9 +482,6 @@ export function FileViewer({
             <button type="button" onClick={() => setFitWidth((v) => !v)} className={cn("btn btn-ghost btn-sm", fitWidth && "text-[var(--primary)] dark:text-[var(--accent)]")} title={t(lang, "viewerFitWidth")}>
               <ScanText className="h-4 w-4" />
             </button>
-            <button type="button" onClick={() => setNight((v) => !v)} aria-pressed={night} className={cn("btn btn-ghost btn-sm", night && "text-[var(--accent)]")} aria-label={t(lang, "viewerNight")} title={t(lang, "viewerNight")}>
-              <Moon className="h-4 w-4" />
-            </button>
             <button type="button" onClick={toggleFullscreen} className="btn btn-ghost btn-sm" aria-label={t(lang, "viewerFullscreen")} title={t(lang, "viewerFullscreen")}>
               {fullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </button>
@@ -657,12 +652,12 @@ export function FileViewer({
       {mode === "doc" && isImage && (
         <div className="bg-[var(--surface)] p-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`/api/files/${fileId}/stream`} alt={fileTitle} className={cn("mx-auto h-auto max-w-full rounded-lg shadow", night && "opacity-90")} />
+          <img src={`/api/files/${fileId}/stream`} alt={fileTitle} className="mx-auto h-auto max-w-full rounded-lg shadow" />
         </div>
       )}
 
       {mode === "doc" && isPdf && (
-        <div className={cn("relative flex bg-[var(--surface)]", night && "pdf-night")} style={{ background: night ? "#151a18" : undefined }}>
+        <div className="relative flex bg-[var(--surface)]">
           {thumbsOpen && doc && (
             <div className="no-scrollbar hidden w-[104px] shrink-0 overflow-y-auto border-e border-[var(--line)] bg-[var(--card)] p-2 sm:block" style={{ maxHeight: "78vh" }} aria-label={t(lang, "viewerThumbnails")}>
               {Array.from({ length: numPages }, (_, i) => i + 1).map((p) => (
@@ -704,7 +699,6 @@ export function FileViewer({
                     doc={doc}
                     pageNo={p}
                     width={pageWidth}
-                    night={night}
                     query={highlightTerms[0] ?? ""}
                     selectedTerm={matches[matchIndex]?.page === p ? query : ""}
                     active={matches[matchIndex]?.page === p}
@@ -840,7 +834,6 @@ function PdfPage({
   doc,
   pageNo,
   width,
-  night,
   query,
   selectedTerm,
   active,
@@ -850,7 +843,6 @@ function PdfPage({
   doc: PDFDocumentProxy;
   pageNo: number;
   width: number;
-  night: boolean;
   query: string;
   selectedTerm: string;
   active: boolean;
@@ -888,7 +880,7 @@ function PdfPage({
       if (cancelled) return;
       const base = page.getViewport({ scale: 1 });
       setRatio(base.height / base.width);
-      const key = `${pageNo}:${Math.round(width)}:${night}`;
+      const key = `${pageNo}:${Math.round(width)}`;
       const needsRender = renderedKey.current !== key;
       if (!shouldRender) return;
 
@@ -960,7 +952,7 @@ function PdfPage({
     return () => {
       cancelled = true;
     };
-  }, [doc, pageNo, width, shouldRender, night, query, selectedTerm]);
+  }, [doc, pageNo, width, shouldRender, query, selectedTerm]);
 
   return (
     <div
