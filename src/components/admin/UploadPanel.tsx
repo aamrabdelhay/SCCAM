@@ -2,13 +2,16 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { uploadPresigned } from "@vercel/blob/client";
 import { UploadCloud, FileUp, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import type { Lang } from "@/lib/types";
-import { csrfToken } from "@/lib/admin-client";
+import { adminFetch, csrfToken } from "@/lib/admin-client";
 import { cn } from "@/lib/format";
 import { AdminSelect } from "./AdminSelect";
 import { UPLOAD_DESTINATIONS } from "@/lib/upload-destinations";
+
+const MAX_UPLOAD_BYTES = 40 * 1024 * 1024;
 
 type UploadJob = {
   id: string;
@@ -17,25 +20,45 @@ type UploadJob = {
   status: "uploading" | "processing" | "done" | "error";
   message?: string;
   fileId?: string;
+  version?: number;
 };
 
 function uploadErrorText(code: string | undefined, status: number, lang: Lang): string {
   if (lang === "ar") {
-    if (status === 413) return "حجم الملف أكبر من الحد المسموح به من الخادم.";
-    if (code === "storage-failed") return "تعذر حفظ الملف في التخزين الدائم. لم يُضف الملف إلى المكتبة؛ حاول مرة أخرى.";
-    if (code === "section-required") return "تعذر تحديد القسم. حدّد القسم مرة أخرى ثم أعد المحاولة.";
-    if (code === "file-required") return "اختر ملفًا أولًا.";
+    if (status === 413 || code === "file-too-large") return "حجم الملف أكبر من 40 ميجابايت.";
+    if (code === "unsupported-file-type") return "نوع الملف غير مدعوم.";
+    if (code === "section-required") return "تعذر تحديد القسم. حدّد القسم مرة أخرى.";
     if (code === "title-required") return "اكتب اسمًا للملف.";
-    if (code === "server-response-invalid") return "الخادم أعاد استجابة غير متوقعة. حاول مرة أخرى.";
-    return "تعذر رفع الملف. تحقق من اتصالك ثم حاول مرة أخرى.";
+    if (code === "upload-state-conflict") return "هناك محاولة رفع سابقة لم تكتمل. حدّث الصفحة ثم حاول مرة أخرى.";
+    if (code === "uploaded-size-mismatch") return "لم يكتمل رفع الملف بالكامل. حاول مرة أخرى.";
+    if (code === "uploaded-file-unavailable") return "لم يتم العثور على الملف بعد الرفع. حاول مرة أخرى.";
+    if (code === "upload-finalize-failed") return "تم رفع الملف لكن تعذر تسجيله في المكتبة. حاول مرة أخرى.";
+    return "تعذر بدء رفع الملف. راجع البيانات وحاول مرة أخرى.";
   }
-  if (status === 413) return "The file is larger than the server upload limit.";
-  if (code === "storage-failed") return "The file could not be saved to persistent storage. It was not added to the library; please try again.";
-  if (code === "section-required") return "The section could not be resolved. Select it again and retry.";
-  if (code === "file-required") return "Choose a file first.";
+  if (status === 413 || code === "file-too-large") return "The file exceeds the 40 MB limit.";
+  if (code === "unsupported-file-type") return "This file type is not supported.";
+  if (code === "section-required") return "The section could not be resolved. Select it again.";
   if (code === "title-required") return "Enter a file title.";
-  if (code === "server-response-invalid") return "The server returned an unexpected response. Please try again.";
-  return "The file could not be uploaded. Check your connection and try again.";
+  if (code === "upload-state-conflict") return "A previous upload is still pending. Refresh and retry.";
+  if (code === "uploaded-size-mismatch") return "The upload did not complete. Please try again.";
+  if (code === "uploaded-file-unavailable") return "The uploaded file could not be found. Please try again.";
+  if (code === "upload-finalize-failed") return "The file uploaded but could not be registered in the library.";
+  return "The upload could not be started. Check the details and retry.";
+}
+
+function messageFromError(error: unknown, lang: Lang): string {
+  const message = error instanceof Error ? error.message : "";
+  if (message.includes("Failed to retrieve the presigned URL")) {
+    return lang === "ar"
+      ? "تعذر إصدار تصريح رفع الملف من مخزن الملفات. راجع صلاحية المخزن وحاول مرة أخرى."
+      : "Could not issue an upload authorization from Blob storage. Check store permissions and retry.";
+  }
+  if (/network|fetch failed|load failed/i.test(message)) {
+    return lang === "ar" ? "انقطع الاتصال أثناء الرفع. تحقق من الإنترنت وحاول مرة أخرى." : "The connection failed during upload. Check your internet and retry.";
+  }
+  return lang === "ar"
+    ? "تعذر إكمال رفع الملف إلى التخزين. حاول مرة أخرى."
+    : "The file could not be uploaded to storage. Please retry.";
 }
 
 export function UploadPanel({ lang }: { lang: Lang }) {
@@ -65,79 +88,136 @@ export function UploadPanel({ lang }: { lang: Lang }) {
 
   async function uploadSelected() {
     if (!file || !destination || !title.trim() || busy) {
-      setError(lang === "ar" ? "اختر الملف والقسم واكتب الاسم." : "Choose a file and section, then enter its title.");
+      setError(lang === "ar" ? "اختر الملف والقسم واكتب الاسم." : "Choose the file, title and section.");
+      return;
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setError(uploadErrorText("file-too-large", 413, lang));
       return;
     }
 
     const jobId = String(Date.now());
+    const retryFileId = job?.status === "error" ? job.fileId : undefined;
+    let reservedFileId: string | undefined;
+    let reservedVersion: number | undefined;
+    let blobUploadCompleted = false;
     setJob({ id: jobId, name: file.name, progress: 0, status: "uploading" });
     setError(null);
 
-    const form = new FormData();
-    form.append("titleAr", title.trim());
-    form.append("titleEn", title.trim());
-    form.append("destination", destination);
-    form.append("downloadAllowed", "1");
-    form.append("printAllowed", "1");
-    form.append("file", file);
-
-    await new Promise<void>((resolve) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/admin/files");
-      xhr.setRequestHeader("x-csrf-token", csrfToken());
-      xhr.upload.onprogress = (event) => {
-        if (!event.lengthComputable) return;
-        const progress = Math.round((event.loaded / event.total) * 100);
-        setJob((current) => current?.id === jobId
-          ? { ...current, progress: Math.min(99, progress), status: progress >= 100 ? "processing" : "uploading" }
-          : current);
+    try {
+      // Only metadata enters the Vercel Function. The file bytes go directly
+      // from this browser to the private Blob store using a short-lived URL.
+      const startResponse = await adminFetch("/api/admin/files/upload-start", {
+        method: "POST",
+        body: JSON.stringify({
+          titleAr: title.trim(),
+          titleEn: title.trim(),
+          destination,
+          fileId: retryFileId,
+          filename: file.name,
+          size: file.size,
+          mime: file.type,
+        }),
+      });
+      const startData = await startResponse.json().catch(() => ({})) as {
+        id?: string;
+        version?: number;
+        pathname?: string;
+        alreadyCompleted?: boolean;
+        error?: string;
       };
-      xhr.onload = () => {
+      if (!startResponse.ok || !startData.id || !startData.version) {
+        throw new Error(uploadErrorText(startData.error, startResponse.status, lang));
+      }
+      reservedFileId = startData.id;
+      reservedVersion = startData.version;
+      if (startData.alreadyCompleted) {
+        setJob({ id: jobId, name: file.name, progress: 100, status: "done", fileId: startData.id, version: startData.version });
+        router.refresh();
+        return;
+      }
+      if (!startData.pathname) throw new Error("upload-start-failed");
+
+      setJob((current) => current?.id === jobId
+        ? { ...current, fileId: startData.id, version: startData.version, status: "uploading", progress: 2 }
+        : current);
+      const uploaded = await uploadPresigned(startData.pathname, file, {
+        access: "private",
+        handleUploadUrl: "/api/admin/files/upload-presigned",
+        headers: { "x-csrf-token": csrfToken() },
+        multipart: file.size > 20 * 1024 * 1024,
+        onUploadProgress: (progress) => {
+          const percentage = Math.max(2, Math.min(96, Math.round(progress.percentage)));
+          setJob((current) => current?.id === jobId ? { ...current, progress: percentage } : current);
+        },
+      });
+      if (uploaded.pathname !== startData.pathname) {
+        throw new Error("The uploaded path does not match the reserved file.");
+      }
+      blobUploadCompleted = true;
+
+      setJob((current) => current?.id === jobId ? { ...current, status: "processing", progress: 97 } : current);
+      const completeResponse = await adminFetch("/api/admin/files/" + startData.id + "/complete", {
+        method: "POST",
+        body: JSON.stringify({ version: startData.version, filename: file.name }),
+      });
+      const completeData = await completeResponse.json().catch(() => ({})) as {
+        ok?: boolean;
+        error?: string;
+        warning?: string;
+      };
+      if (!completeResponse.ok || completeData.ok !== true) {
+        throw new Error(uploadErrorText(completeData.error, completeResponse.status, lang));
+      }
+
+      setJob({
+        id: jobId,
+        name: file.name,
+        progress: 100,
+        status: "done",
+        fileId: startData.id,
+        message: completeData.warning,
+      });
+      router.refresh();
+    } catch (err) {
+      // If the final response was lost after the server committed the version,
+      // query the idempotent completion endpoint before showing a failure.
+      if (blobUploadCompleted && reservedFileId && reservedVersion) {
         try {
-          const data = JSON.parse(xhr.responseText) as { id?: string; ok?: boolean; error?: string; warning?: string };
-          if (xhr.status >= 200 && xhr.status < 300 && data.id && data.ok !== false) {
+          const retry = await adminFetch("/api/admin/files/" + reservedFileId + "/complete", {
+            method: "POST",
+            body: JSON.stringify({ version: reservedVersion, filename: file.name }),
+          });
+          const retryData = await retry.json().catch(() => ({})) as { ok?: boolean; warning?: string };
+          if (retry.ok && retryData.ok === true) {
             setJob({
               id: jobId,
               name: file.name,
               progress: 100,
               status: "done",
-              fileId: data.id,
-              message: data.warning,
+              fileId: reservedFileId,
+              version: reservedVersion,
+              message: retryData.warning,
             });
             router.refresh();
-          } else {
-            setJob({
-              id: jobId,
-              name: file.name,
-              progress: 0,
-              status: "error",
-              message: uploadErrorText(data.error, xhr.status, lang),
-              fileId: data.id,
-            });
+            return;
           }
         } catch {
-          setJob({
-            id: jobId,
-            name: file.name,
+          // Preserve the original error and let the user retry with the same pending file id.
+        }
+      }
+      const message = err instanceof Error ? err.message : "";
+      setJob((current) => current?.id === jobId
+        ? {
+            ...current,
+            fileId: reservedFileId,
+            version: reservedVersion,
             progress: 0,
             status: "error",
-            message: uploadErrorText("server-response-invalid", xhr.status, lang),
-          });
-        }
-        resolve();
-      };
-      xhr.onerror = () => {
-        setJob({
-          id: jobId,
-          name: file.name,
-          progress: 0,
-          status: "error",
-          message: lang === "ar" ? "فشل الاتصال بالخادم أثناء الرفع." : "The connection failed during upload.",
-        });
-        resolve();
-      };
-      xhr.send(form);
-    });
+            message: message.includes("تعذر") || message.includes("The file") ? message : messageFromError(err, lang),
+          }
+        : current);
+    }
   }
 
   return (

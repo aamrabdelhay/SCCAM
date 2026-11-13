@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import type { Lang } from "@/lib/types";
-import { adminFetch, adminJson } from "@/lib/admin-client";
+import { adminFetch, adminJson, csrfToken } from "@/lib/admin-client";
+import { uploadPresigned } from "@vercel/blob/client";
 import { formatDate, formatNumber, pagesLabel, textStatusLabel } from "@/lib/format";
 
 type SectionOpt = { id: string; name: string; categories: { id: string; name: string }[] };
@@ -109,14 +110,65 @@ export function FileEditor({
     if (!(upload instanceof File) || !upload.size) return setStatus(t(lang, "adminUploadFailed"));
     setBusy("replace");
     setStatus(t(lang, "adminProcessing"));
-    const res = await adminFetch(`/api/admin/files/${file.id}`, { method: "POST", body: form });
-    const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
-    setBusy(null);
-    setStatus(res.ok && data.ok !== false ? t(lang, "adminUploadDone") : `${t(lang, "adminUploadFailed")}: ${data.error ?? ""}`);
-    formEl.reset();
-    router.refresh();
-  }
 
+    try {
+      const startResponse = await adminJson("/api/admin/files/upload-start", "POST", {
+        fileId: file.id,
+        filename: upload.name,
+        size: upload.size,
+        mime: upload.type,
+        changelog: form.get("changelog"),
+      });
+      const startData = await startResponse.json().catch(() => ({})) as {
+        pathname?: string;
+        version?: number;
+        alreadyCompleted?: boolean;
+        error?: string;
+      };
+      if (!startResponse.ok || !startData.version) {
+        throw new Error(startData.error ?? "upload-start-failed");
+      }
+      if (startData.alreadyCompleted) {
+        setBusy(null);
+        setStatus(t(lang, "adminUploadDone"));
+        formEl.reset();
+        router.refresh();
+        return;
+      }
+      if (!startData.pathname) throw new Error("upload-start-failed");
+
+      const blob = await uploadPresigned(startData.pathname, upload, {
+        access: "private",
+        handleUploadUrl: "/api/admin/files/upload-presigned",
+        headers: { "x-csrf-token": csrfToken() },
+        multipart: upload.size > 20 * 1024 * 1024,
+      });
+      if (blob.pathname !== startData.pathname) throw new Error("upload-path-mismatch");
+
+      const completeResponse = await adminJson("/api/admin/files/" + file.id + "/complete", "POST", {
+        version: startData.version,
+        filename: upload.name,
+      });
+      const completeData = await completeResponse.json().catch(() => ({})) as {
+        ok?: boolean;
+        error?: string;
+      };
+      if (!completeResponse.ok || completeData.ok !== true) {
+        throw new Error(completeData.error ?? "upload-finalize-failed");
+      }
+
+      setBusy(null);
+      setStatus(t(lang, "adminUploadDone"));
+      formEl.reset();
+      router.refresh();
+    } catch (err) {
+      setBusy(null);
+      const message = err instanceof Error ? err.message : "";
+      setStatus(lang === "ar"
+        ? "تعذر رفع النسخة الجديدة. " + message
+        : "Could not upload the new version. " + message);
+    }
+  }
   async function reprocess() {
     setBusy("reprocess");
     setStatus(t(lang, "adminProcessing"));
