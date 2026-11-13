@@ -41,7 +41,7 @@ export default async function HomePage() {
   return (
     <>
       <SubmissionCountdown lang={lang} settings={settings} />
-      <section className="relative mt-4 overflow-hidden border-b border-[var(--line)]">
+      <section data-motion-reveal className="relative mt-4 overflow-hidden border-b border-[var(--line)]">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{
           background: "radial-gradient(900px 380px at 88% -8%, color-mix(in srgb, var(--brand-blue) 20%, transparent), transparent 70%), radial-gradient(720px 340px at 5% 0%, color-mix(in srgb, var(--brand-green) 17%, transparent), transparent 70%), radial-gradient(520px 300px at 50% 16%, color-mix(in srgb, var(--brand-yellow) 15%, transparent), transparent 70%), radial-gradient(440px 280px at 100% 78%, color-mix(in srgb, var(--brand-orange) 11%, transparent), transparent 70%)",
         }} />
@@ -178,7 +178,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section aria-labelledby="best-memos-title" className="container-x mt-14">
+      <section data-motion-reveal aria-labelledby="best-memos-title" className="container-x mt-14">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 id="best-memos-title" className="section-title">{lang === "ar" ? "أفضل المذكرات" : "Best memoranda"}</h2>
@@ -197,9 +197,9 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section aria-labelledby="tools-title" className="container-x mb-14 mt-14">
+      <section data-motion-reveal aria-labelledby="tools-title" className="container-x mb-14 mt-14">
         <div className="mb-5"><h2 id="tools-title" className="section-title">{lang === "ar" ? "أدوات ومصادر الباحث" : "Research tools and resources"}</h2></div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5" data-motion-stagger>
           {[
             { href: "/guidelines", title: lang === "ar" ? "الإرشادات" : "Guidelines", body: lang === "ar" ? "إرشادات البحث واستخدام موارد المكتبة." : "Guidance for using the library and researching its materials." },
             { href: "/research-platforms", title: lang === "ar" ? "منصات البحث" : "Research platforms", body: lang === "ar" ? "قواعد بيانات مجانية للسوابق والأحكام الدولية." : "Free databases for international cases and judgments." },

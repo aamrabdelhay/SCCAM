@@ -2,245 +2,222 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { UploadCloud, FileUp, CheckCircle2, AlertTriangle, Loader2, X } from "lucide-react";
+import { UploadCloud, FileUp, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import type { Lang } from "@/lib/types";
 import { csrfToken } from "@/lib/admin-client";
 import { cn } from "@/lib/format";
 import { AdminSelect } from "./AdminSelect";
+import { UPLOAD_DESTINATIONS } from "@/lib/upload-destinations";
 
-type SectionOpt = { id: string; name: string; categories: { id: string; name: string }[] };
-
-type Job = {
+type UploadJob = {
   id: string;
   name: string;
-  size: number;
   progress: number;
-  status: "queued" | "uploading" | "processing" | "done" | "error";
+  status: "uploading" | "processing" | "done" | "error";
   message?: string;
   fileId?: string;
 };
 
-export function UploadPanel({
-  lang,
-  sections,
-  defaultSectionId,
-  defaultCategoryId,
-}: {
-  lang: Lang;
-  sections: SectionOpt[];
-  defaultSectionId?: string;
-  defaultCategoryId?: string;
-}) {
+function uploadErrorText(code: string | undefined, status: number, lang: Lang): string {
+  if (lang === "ar") {
+    if (status === 413) return "حجم الملف أكبر من الحد المسموح به من الخادم.";
+    if (code === "storage-failed") return "تعذر حفظ الملف في التخزين الدائم. لم يُضف الملف إلى المكتبة؛ حاول مرة أخرى.";
+    if (code === "section-required") return "تعذر تحديد القسم. حدّد القسم مرة أخرى ثم أعد المحاولة.";
+    if (code === "file-required") return "اختر ملفًا أولًا.";
+    if (code === "title-required") return "اكتب اسمًا للملف.";
+    if (code === "server-response-invalid") return "الخادم أعاد استجابة غير متوقعة. حاول مرة أخرى.";
+    return "تعذر رفع الملف. تحقق من اتصالك ثم حاول مرة أخرى.";
+  }
+  if (status === 413) return "The file is larger than the server upload limit.";
+  if (code === "storage-failed") return "The file could not be saved to persistent storage. It was not added to the library; please try again.";
+  if (code === "section-required") return "The section could not be resolved. Select it again and retry.";
+  if (code === "file-required") return "Choose a file first.";
+  if (code === "title-required") return "Enter a file title.";
+  if (code === "server-response-invalid") return "The server returned an unexpected response. Please try again.";
+  return "The file could not be uploaded. Check your connection and try again.";
+}
+
+export function UploadPanel({ lang }: { lang: Lang }) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [destination, setDestination] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [title, setTitle] = useState("");
+  const [titleEdited, setTitleEdited] = useState(false);
+  const [job, setJob] = useState<UploadJob | null>(null);
   const [dragOver, setDragOver] = useState(false);
-  const [sectionId, setSectionId] = useState(defaultSectionId ?? sections[0]?.id ?? "");
-  const [categoryId, setCategoryId] = useState(defaultCategoryId ?? "");
-  const [importance, setImportance] = useState("reference");
-  const [editionYear, setEditionYear] = useState("");
-  const [visibility, setVisibility] = useState("published");
+  const [error, setError] = useState<string | null>(null);
 
-  const activeSection = sections.find((s) => s.id === sectionId);
+  const options = UPLOAD_DESTINATIONS.map((item) => ({
+    value: item.value,
+    label: lang === "ar" ? item.labelAr : item.labelEn,
+  }));
+  const busy = job?.status === "uploading" || job?.status === "processing";
 
-  function updateJob(id: string, patch: Partial<Job>) {
-    setJobs((prev) => prev.map((j) => (j.id === id ? { ...j, ...patch } : j)));
+  function chooseFile(nextFile?: File) {
+    if (!nextFile) return;
+    setFile(nextFile);
+    if (!titleEdited) setTitle(nextFile.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim());
+    setJob(null);
+    setError(null);
   }
 
-  async function uploadOne(file: File, jobId: string) {
-    const title = file.name.replace(/\.[^.]+$/, "");
+  async function uploadSelected() {
+    if (!file || !destination || !title.trim() || busy) {
+      setError(lang === "ar" ? "اختر الملف والقسم واكتب الاسم." : "Choose a file and section, then enter its title.");
+      return;
+    }
+
+    const jobId = String(Date.now());
+    setJob({ id: jobId, name: file.name, progress: 0, status: "uploading" });
+    setError(null);
+
     const form = new FormData();
-    form.append("titleAr", title);
-    form.append("titleEn", title);
-    form.append("sectionId", sectionId);
-    if (categoryId) form.append("categoryId", categoryId);
-    if (editionYear) form.append("editionYear", editionYear);
-    form.append("importance", importance);
-    form.append("visibility", visibility);
+    form.append("titleAr", title.trim());
+    form.append("titleEn", title.trim());
+    form.append("destination", destination);
     form.append("downloadAllowed", "1");
     form.append("printAllowed", "1");
     form.append("file", file);
-
-    updateJob(jobId, { status: "uploading", progress: 0 });
 
     await new Promise<void>((resolve) => {
       const xhr = new XMLHttpRequest();
       xhr.open("POST", "/api/admin/files");
       xhr.setRequestHeader("x-csrf-token", csrfToken());
-      xhr.upload.onprogress = (e) => {
-        if (!e.lengthComputable) return;
-        const pct = Math.round((e.loaded / e.total) * 100);
-        updateJob(jobId, { progress: Math.min(99, pct), status: pct >= 100 ? "processing" : "uploading" });
+      xhr.upload.onprogress = (event) => {
+        if (!event.lengthComputable) return;
+        const progress = Math.round((event.loaded / event.total) * 100);
+        setJob((current) => current?.id === jobId
+          ? { ...current, progress: Math.min(99, progress), status: progress >= 100 ? "processing" : "uploading" }
+          : current);
       };
       xhr.onload = () => {
         try {
-          const data = JSON.parse(xhr.responseText) as { id?: string; ok?: boolean; error?: string };
-          if (xhr.status === 200 && data.ok !== false) {
-            updateJob(jobId, { status: "done", progress: 100, fileId: data.id });
+          const data = JSON.parse(xhr.responseText) as { id?: string; ok?: boolean; error?: string; warning?: string };
+          if (xhr.status >= 200 && xhr.status < 300 && data.id && data.ok !== false) {
+            setJob({
+              id: jobId,
+              name: file.name,
+              progress: 100,
+              status: "done",
+              fileId: data.id,
+              message: data.warning,
+            });
+            router.refresh();
           } else {
-            updateJob(jobId, { status: "error", message: data.error ?? `HTTP ${xhr.status}`, fileId: data.id });
+            setJob({
+              id: jobId,
+              name: file.name,
+              progress: 0,
+              status: "error",
+              message: uploadErrorText(data.error, xhr.status, lang),
+              fileId: data.id,
+            });
           }
         } catch {
-          updateJob(jobId, { status: "error", message: `HTTP ${xhr.status}` });
+          setJob({
+            id: jobId,
+            name: file.name,
+            progress: 0,
+            status: "error",
+            message: uploadErrorText("server-response-invalid", xhr.status, lang),
+          });
         }
         resolve();
       };
       xhr.onerror = () => {
-        updateJob(jobId, { status: "error", message: "network" });
+        setJob({
+          id: jobId,
+          name: file.name,
+          progress: 0,
+          status: "error",
+          message: lang === "ar" ? "فشل الاتصال بالخادم أثناء الرفع." : "The connection failed during upload.",
+        });
         resolve();
       };
       xhr.send(form);
     });
   }
 
-  async function start(files: FileList | File[]) {
-    const list = Array.from(files);
-    if (!list.length || !sectionId) return;
-    const created: Job[] = list.map((f, i) => ({
-      id: `${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
-      name: f.name,
-      size: f.size,
-      progress: 0,
-      status: "queued",
-    }));
-    setJobs((prev) => [...created, ...prev]);
-    for (let i = 0; i < list.length; i++) {
-      await uploadOne(list[i], created[i].id);
-    }
-    router.refresh();
-  }
-
   return (
-    <section className="card p-4">
+    <section className="card overflow-visible p-4 sm:p-5">
       <div className="flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-[14px] font-bold">
-          <FileUp className="h-4 w-4 text-[var(--accent)]" aria-hidden="true" />
+          <FileUp className="h-4 w-4 text-[var(--brand-orange)]" aria-hidden="true" />
           {t(lang, "adminUpload")}
         </h2>
-        {jobs.some((j) => j.status === "done") && (
-          <button type="button" onClick={() => setJobs((prev) => prev.filter((j) => j.status !== "done"))} className="text-[11px] font-semibold text-[var(--muted)] hover:underline">
-            {t(lang, "close")}
-          </button>
-        )}
+        {job && <button type="button" onClick={() => setJob(null)} className="text-[11px] font-semibold text-[var(--muted)] hover:underline">{t(lang, "close")}</button>}
       </div>
 
-      <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="label" htmlFor="upload-section">{t(lang, "section")}</label>
-          <AdminSelect id="upload-section" value={sectionId} options={sections.map((section) => ({ value: section.id, label: section.name }))} placeholder="اختر القسم" onChange={(value) => { setSectionId(value); setCategoryId(""); }} />
+          <label className="label" htmlFor="upload-title">{lang === "ar" ? "اسم الملف" : "File title"}</label>
+          <input id="upload-title" value={title} onChange={(event) => { setTitle(event.target.value); setTitleEdited(true); }} className="field" placeholder={lang === "ar" ? "سيُقترح من اسم الملف" : "Suggested from filename"} />
         </div>
         <div>
-          <label className="label" htmlFor="upload-category">{t(lang, "subCategory")}</label>
-          <AdminSelect id="upload-category" value={categoryId} options={(activeSection?.categories ?? []).map((category) => ({ value: category.id, label: category.name }))} placeholder="بدون تصنيف" onChange={setCategoryId} />
-        </div>
-        <div>
-          <label className="label" htmlFor="upload-importance">{t(lang, "importance")}</label>
-          <select id="upload-importance" value={importance} onChange={(e) => setImportance(e.target.value)} className="field">
-            <option value="essential">{t(lang, "essential")}</option>
-            <option value="important">{t(lang, "important")}</option>
-            <option value="reference">{t(lang, "reference")}</option>
-          </select>
-        </div>
-        <div>
-          <label className="label" htmlFor="upload-year">{t(lang, "edition")}</label>
-          <input id="upload-year" value={editionYear} onChange={(e) => setEditionYear(e.target.value)} placeholder="2026" className="field" dir="ltr" />
+          <label className="label" htmlFor="upload-destination">{lang === "ar" ? "القسم" : "Section"}</label>
+          <AdminSelect id="upload-destination" value={destination} options={options} placeholder={lang === "ar" ? "اختر القسم" : "Choose a section"} onChange={setDestination} />
         </div>
       </div>
-      <p className="hint mt-1.5">
-        {t(lang, "adminVisibility")}: {visibility === "published" ? t(lang, "published") : visibility === "hidden" ? t(lang, "hidden") : t(lang, "scheduled")} —{" "}
-        <select value={visibility} onChange={(e) => setVisibility(e.target.value)} className="rounded border border-[var(--line)] bg-[var(--bg)] px-1 text-[11px]">
-          <option value="published">{t(lang, "published")}</option>
-          <option value="hidden">{t(lang, "hidden")}</option>
-          <option value="scheduled">{t(lang, "scheduled")}</option>
-        </select>
-
-      </p>
 
       <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
-        }}
+        onDragOver={(event) => { event.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
-        onDrop={(e) => {
-          e.preventDefault();
+        onDrop={(event) => {
+          event.preventDefault();
           setDragOver(false);
-          if (e.dataTransfer.files?.length) void start(e.dataTransfer.files);
+          chooseFile(event.dataTransfer.files?.[0]);
         }}
         onClick={() => inputRef.current?.click()}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
-        }}
+        onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") inputRef.current?.click(); }}
         role="button"
         tabIndex={0}
         aria-label={t(lang, "adminDropzone")}
         className={cn(
-          "mt-3 flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed p-6 text-center transition-colors",
-          dragOver ? "border-[var(--accent)] bg-[color-mix(in_srgb,var(--accent)_10%,var(--bg))]" : "border-[var(--line)] hover:border-[color-mix(in_srgb,var(--primary)_40%,var(--line))] hover:bg-[var(--surface)]",
+          "mt-3 flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed p-5 text-center transition-all duration-200",
+          dragOver ? "border-[var(--brand-green-deep)] bg-[var(--primary-soft)]" : "border-[var(--line)] bg-[var(--surface)]/55 hover:border-[var(--brand-orange)] hover:bg-[var(--sun)]/10",
         )}
       >
-        <UploadCloud className="h-7 w-7 text-[var(--muted)]" aria-hidden="true" />
-        <p className="text-[13px] font-bold">{t(lang, "adminDropzone")}</p>
+        <UploadCloud className="h-6 w-6 text-[var(--brand-blue)]" aria-hidden="true" />
+        <p className="text-[13px] font-bold">{file ? file.name : t(lang, "adminDropzone")}</p>
         <p className="text-[11px] text-[var(--muted)]">{t(lang, "adminDropHint")}</p>
         <input
           ref={inputRef}
           type="file"
-          multiple
           accept=".pdf,.docx,.txt,.md,image/png,image/jpeg,image/webp"
           className="hidden"
-          onChange={(e) => {
-            if (e.target.files) void start(e.target.files);
-            e.target.value = "";
-          }}
+          onChange={(event) => chooseFile(event.target.files?.[0])}
         />
       </div>
 
-      {jobs.length > 0 && (
-        <ul className="mt-3 space-y-2">
-          {jobs.map((job) => (
-            <li key={job.id} className="rounded-xl border border-[var(--line)] bg-[var(--bg)] p-2.5">
-              <div className="flex items-center justify-between gap-2">
-                <span className="min-w-0 flex-1 truncate text-[12px] font-semibold" dir="auto">{job.name}</span>
-                <span className="shrink-0 text-[10.5px] font-bold text-[var(--muted)]">
-                  {job.status === "done" ? <CheckCircle2 className="h-4 w-4 text-[#1a7f37]" /> : job.status === "error" ? <AlertTriangle className="h-4 w-4 text-[var(--danger)]" /> : job.status === "processing" ? <Loader2 className="h-4 w-4 animate-spin text-[var(--accent)]" /> : `${job.progress}%`}
-                </span>
-              </div>
-              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[var(--surface)]">
-                <div
-                  className={cn("h-full rounded-full transition-all", job.status === "error" ? "bg-[var(--danger)]" : job.status === "done" ? "bg-[#1a7f37]" : "bg-[var(--accent)]")}
-                  style={{ width: `${job.status === "processing" ? 100 : job.progress}%` }}
-                />
-              </div>
-              <div className="mt-1 flex items-center justify-between gap-2 text-[10.5px]">
-                <span className="text-[var(--muted)]">
-                  {job.status === "uploading" && t(lang, "adminUploading")}
-                  {job.status === "processing" && t(lang, "adminProcessing")}
-                  {job.status === "done" && t(lang, "adminUploadDone")}
-                  {job.status === "error" && `${t(lang, "adminUploadFailed")}: ${job.message ?? ""}`}
-                </span>
-                {job.status === "done" && job.fileId && (
-                  <a href={`/admin/files/${job.fileId}`} className="font-semibold link">
-                    {t(lang, "edit")} →
-                  </a>
-                )}
-                {job.status === "error" && (
-                  <span className="flex items-center gap-2">
-                    {job.fileId && (
-                      <a href={`/admin/files/${job.fileId}`} className="font-semibold link">
-                        {t(lang, "adminRetry")} →
-                      </a>
-                    )}
-                    <button type="button" onClick={() => setJobs((prev) => prev.filter((j) => j.id !== job.id))} className="inline-flex items-center gap-1 font-semibold text-[var(--muted)]">
-                      <X className="h-3 w-3" /> {t(lang, "close")}
-                    </button>
-                  </span>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
+      {error && <p role="alert" className="mt-2 text-[12px] font-semibold text-[var(--danger)]">{error}</p>}
+
+      {job && (
+        <div className="mt-3 rounded-xl border border-[var(--line)] bg-[var(--bg)] p-2.5">
+          <div className="flex items-center justify-between gap-2">
+            <span className="min-w-0 flex-1 truncate text-[12px] font-semibold" dir="auto">{job.name}</span>
+            <span className="shrink-0">
+              {job.status === "done" ? <CheckCircle2 className="h-4 w-4 text-[#16803B]" /> : job.status === "error" ? <AlertTriangle className="h-4 w-4 text-[var(--danger)]" /> : <Loader2 className="h-4 w-4 animate-spin text-[var(--brand-orange)]" />}
+            </span>
+          </div>
+          {job.status !== "done" && job.status !== "error" && (
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--line)]">
+              <div className="h-full rounded-full bg-[linear-gradient(90deg,var(--brand-green),var(--brand-yellow),var(--brand-orange))] transition-all duration-200" style={{ width: job.progress + "%" }} />
+            </div>
+          )}
+          {job.status === "error" && <p role="alert" className="mt-1 text-[11px] text-[var(--danger)]">{job.message}</p>}
+          {job.status === "done" && job.message && <p className="mt-1 text-[11px] text-[var(--accent)]">{lang === "ar" ? "تم رفع الملف، لكن تعذر استخراج النص: " : "Uploaded, but text extraction failed: "}{job.message}</p>}
+          {job.fileId && <a href={"/admin/files/" + job.fileId} className="mt-2 inline-flex text-[11px] font-semibold link">{t(lang, "edit")} →</a>}
+        </div>
       )}
+
+      <div className="mt-4 flex justify-end border-t border-[var(--line)] pt-3">
+        <button type="button" onClick={() => void uploadSelected()} disabled={busy || !file || !destination || !title.trim()} className="btn btn-primary btn-sm gap-1.5">
+          {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <UploadCloud className="h-3.5 w-3.5" />}
+          {lang === "ar" ? "رفع الملف" : "Upload file"}
+        </button>
+      </div>
     </section>
   );
 }

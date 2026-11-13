@@ -36,12 +36,6 @@ export default async function AdminDashboard() {
     ),
   ]);
 
-  const sectionOptions = sections.map((s, i) => ({
-    id: s.id,
-    name: pickText(lang, s.name_ar, s.name_en),
-    categories: (categoriesAll[i] ?? []).map((c) => ({ id: c.id, name: pickText(lang, c.name_ar, c.name_en) })),
-  }));
-
   const stats = [
     { label: t(lang, "adminFilesTotal"), value: formatNumber(perSection.reduce((n, r) => n + Number(r?.c ?? 0), 0), lang), icon: Files, href: "/admin/files" },
     { label: t(lang, "adminPagesTotal"), value: formatNumber(fileCounts.pages, lang), icon: Layers, href: "/admin/files" },
@@ -65,7 +59,7 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      <UploadPanel lang={lang} sections={sectionOptions} />
+      <UploadPanel lang={lang} />
 
       <section className="card p-4">
         <div className="flex items-center justify-between">

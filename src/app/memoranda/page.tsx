@@ -11,7 +11,7 @@ export default async function MemorandaPage() {
   const ar = lang === "ar";
   const files = await listFiles({ limit: 1000 });
   const memoranda = files
-    .filter((file) => /(?:مذكر(?:ة|ات)|memorials?|memorand(?:um|a)|skeleton\s+argument)/i.test(
+    .filter((file) => file.tags.includes("__upload_memoranda") || /(?:مذكر(?:ة|ات)|memorials?|memorand(?:um|a)|skeleton\s+argument)/i.test(
       [file.title_ar, file.title_en, file.description_ar, file.description_en, file.tags].join(" "),
     ))
 ;

@@ -113,18 +113,24 @@ export function HeaderClient({
     { href: "/research-platforms", label: lang === "ar" ? "منصات البحث" : "Research platforms", icon: Globe },
   ];
 
+  const navigationSections = sections.length > 0 ? sections : [
+    { slug: "case", name: lang === "ar" ? "القضية" : "The Case" },
+    { slug: "laws", name: lang === "ar" ? "القوانين" : "Laws & Rules" },
+    { slug: "books", name: lang === "ar" ? "الكتب" : "Books" },
+  ];
+
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
     <header
       className={cn(
-        "no-print sticky top-0 z-40 border-b border-[var(--line)] backdrop-blur-xl transition-shadow duration-300",
+        "no-print sticky top-0 z-50 border-b border-[var(--line)] backdrop-blur-xl transition-all duration-300",
         scrolled ? "shadow-[0_10px_30px_-24px_rgba(12,72,113,.25)]" : "",
       )}
       style={{ background: "var(--header)" }}
     >
       <div aria-hidden="true" className="h-[3px] w-full" style={{ background: "linear-gradient(90deg, #43A53C 0%, #0C873E 22%, #EE940F 42%, #F4B042 58%, #2975B2 78%, #0C4871 100%)" }} />
-      <div className="container-x flex h-16 items-center gap-3">
+      <div className={cn("container-x flex items-center gap-3 transition-[height] duration-300", scrolled ? "h-14" : "h-16")}>
         <button
           type="button"
           className="btn btn-ghost -ms-2 px-2 xl:hidden"
@@ -164,8 +170,8 @@ export function HeaderClient({
               <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", sectionsOpen && "rotate-180")} />
             </button>
             {sectionsOpen && (
-              <div className="absolute z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--card)] p-1.5 shadow-xl">
-                {sections.map((section) => (
+              <div className="absolute start-0 top-full z-[100] mt-2 w-56 origin-top overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--card)] p-1.5 shadow-xl motion-safe:animate-fade-up">
+                {navigationSections.map((section) => (
                   <Link key={section.slug} href={"/" + section.slug} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-medium text-[var(--text)] hover:bg-[var(--surface)]">
                     <Layers className="h-4 w-4 text-[var(--muted)]" aria-hidden="true" />
                     {section.name}
@@ -187,7 +193,7 @@ export function HeaderClient({
               <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", archiveOpen && "rotate-180")} />
             </button>
             {archiveOpen && (
-              <div className="absolute end-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--card)] p-1.5 shadow-xl">
+              <div className="absolute end-0 top-full z-[100] mt-2 w-64 origin-top overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--card)] p-1.5 shadow-xl motion-safe:animate-fade-up">
                 {archiveLinks.map((l) => (
                   <Link key={l.href} href={l.href} className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium text-[var(--text)] hover:bg-[var(--surface)]">
                     <l.icon className="h-4 w-4 text-[var(--muted)]" aria-hidden="true" />
@@ -276,7 +282,7 @@ export function HeaderClient({
             <Link href="/archive" className="rounded-xl px-3 py-2.5 text-[13px] font-medium text-[var(--muted)]">{t(lang, "navArchive")}</Link>
             <Link href="/search" className="rounded-xl px-3 py-2.5 text-[13px] font-medium text-[var(--muted)]">{t(lang, "navSearch")}</Link>
             <div className="my-2 h-px bg-[var(--line)]" />
-            {sections.map((s) => (
+            {navigationSections.map((s) => (
               <Link
                 key={s.slug}
                 href={`/${s.slug}`}

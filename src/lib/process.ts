@@ -1,5 +1,5 @@
 import { batch, newId, nowIso, one, run } from "./db";
-import { buildStorageKey, getObjectBuffer, putObject } from "./storage";
+import { buildStorageKey, deleteObject, getObjectBuffer, putObject } from "./storage";
 import { extractDocx, extractPdf, extractPlainText, ocrPdfPages, type ExtractResult } from "./extract";
 import { normalizeArabic, tokenize } from "./search";
 
@@ -173,44 +173,81 @@ export async function updatePageText(fileId: string, pageNo: number, text: strin
 /** Upload → storage → version row → extraction → index. */
 export async function storeAndProcess(input: UploadInput) {
   const version = input.version ?? 1;
-  const ext = extForMime(input.mime, input.filename);
-  const key = buildStorageKey(input.fileId, version, ext);
-  await putObject(key, input.buffer, input.mime);
-
-  // Snapshot the outgoing version's text before it is replaced (for version diffing).
-  const previous = await one<{ current_version: number }>("SELECT current_version FROM files WHERE id = ?", [input.fileId]);
-  if (previous) {
-    await run(
-      `INSERT INTO pages_history (file_id, version, page_no, text, created_at)
-       SELECT file_id, ?, page_no, text, ? FROM pages_text WHERE file_id = ?
-       ON CONFLICT (file_id, version, page_no) DO UPDATE
-       SET text = excluded.text, created_at = excluded.created_at`,
-      [previous.current_version, nowIso(), input.fileId],
-    );
-  }
-  const versionId = input.existingVersionId ?? newId("ver");
-  await run(
-    `INSERT INTO file_versions (id, file_id, version, storage_key, mime, size_bytes, page_count, changelog, text_status, created_at)
-     VALUES (?,?,?,?,?,?,?,?,?,?)`,
-    [versionId, input.fileId, version, key, input.mime, input.buffer.byteLength, 0, input.changelog ?? "", "processing", nowIso()],
-  );
-  await run(
-    `UPDATE files SET storage_key = ?, mime = ?, size_bytes = ?, current_version = ?, text_status = 'processing', updated_at = ? WHERE id = ?`,
-    [key, input.mime, input.buffer.byteLength, version, nowIso(), input.fileId],
-  );
+  const key = buildStorageKey(input.fileId, version, extForMime(input.mime, input.filename));
+  let storedKey: string;
 
   try {
-    const res = await processDocument(input.fileId, input.buffer, input.mime, input.filename, versionId);
-    await run("UPDATE file_versions SET page_count = ?, text_status = ? WHERE id = ?", [res.pageCount, res.status, versionId]);
-    return { ok: true as const, ...res };
+    storedKey = await putObject(key, input.buffer, input.mime);
+  } catch (err) {
+    return {
+      ok: false as const,
+      stage: "storage" as const,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+
+  const versionId = input.existingVersionId ?? newId("ver");
+  try {
+    const previous = await one<{ current_version: number }>(
+      "SELECT current_version FROM files WHERE id = ?",
+      [input.fileId],
+    );
+    if (previous) {
+      await run(
+        "INSERT INTO pages_history (file_id, version, page_no, text, created_at) " +
+          "SELECT file_id, ?, page_no, text, ? FROM pages_text WHERE file_id = ? " +
+          "ON CONFLICT (file_id, version, page_no) DO UPDATE " +
+          "SET text = excluded.text, created_at = excluded.created_at",
+        [previous.current_version, nowIso(), input.fileId],
+      );
+    }
+
+    await run(
+      "INSERT INTO file_versions (id, file_id, version, storage_key, mime, size_bytes, page_count, changelog, text_status, created_at) " +
+        "VALUES (?,?,?,?,?,?,?,?,?,?)",
+      [versionId, input.fileId, version, storedKey, input.mime, input.buffer.byteLength, 0, input.changelog ?? "", "processing", nowIso()],
+    );
+    await run(
+      "UPDATE files SET storage_key = ?, mime = ?, size_bytes = ?, current_version = ?, text_status = 'processing', updated_at = ? WHERE id = ?",
+      [storedKey, input.mime, input.buffer.byteLength, version, nowIso(), input.fileId],
+    );
+  } catch (err) {
+    await run("DELETE FROM file_versions WHERE id = ?", [versionId]).catch(() => undefined);
+    await deleteObject(storedKey).catch(() => undefined);
+    return {
+      ok: false as const,
+      stage: "database" as const,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+
+  // A parsing/OCR failure must not discard an otherwise stored, readable file.
+  try {
+    const result = await processDocument(input.fileId, input.buffer, input.mime, input.filename, versionId);
+    await run(
+      "UPDATE file_versions SET page_count = ?, text_status = ? WHERE id = ?",
+      [result.pageCount, result.status, versionId],
+    );
+    return { ok: true as const, ...result };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    await run("UPDATE files SET text_status = 'failed', text_error = ? WHERE id = ?", [message.slice(0, 400), input.fileId]);
-    await run("UPDATE file_versions SET text_status = 'failed' WHERE id = ?", [versionId]);
-    return { ok: false as const, error: message };
+    await run(
+      "UPDATE files SET text_status = 'failed', text_error = ? WHERE id = ?",
+      [message.slice(0, 400), input.fileId],
+    ).catch(() => undefined);
+    await run(
+      "UPDATE file_versions SET text_status = 'failed' WHERE id = ?",
+      [versionId],
+    ).catch(() => undefined);
+    return {
+      ok: true as const,
+      pageCount: 0,
+      status: "failed",
+      needsOcr: false,
+      warning: message,
+    };
   }
 }
-
 export async function reprocessFile(fileId: string) {
   const file = await one<{ storage_key: string; mime: string; current_version: number }>(
     "SELECT storage_key, mime, current_version FROM files WHERE id = ?",
