@@ -208,20 +208,36 @@ export default async function FilePage({ params, searchParams }: Params) {
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="min-w-0">
           {unlocked ? (
-            <FileViewer
-              fileId={file.id}
-              fileTitle={title}
-              mime={file.mime}
-              pageCount={file.page_count}
-              lang={lang}
-              initialPage={initialPage}
-              initialQuery={query}
-              downloadAllowed={Boolean(file.download_allowed)}
-              printAllowed={Boolean(file.print_allowed)}
-              glossary={glossary.map((g) => ({ termAr: g.term_ar, termEn: g.term_en, defAr: g.def_ar, defEn: g.def_en }))}
-              sectionSlug={file.section_slug}
-              sectionName={sectionName}
-            />
+            file.storage_key ? (
+              <FileViewer
+                fileId={file.id}
+                fileTitle={title}
+                mime={file.mime}
+                pageCount={file.page_count}
+                lang={lang}
+                initialPage={initialPage}
+                initialQuery={query}
+                downloadAllowed={Boolean(file.download_allowed)}
+                printAllowed={Boolean(file.print_allowed)}
+                glossary={glossary.map((g) => ({ termAr: g.term_ar, termEn: g.term_en, defAr: g.def_ar, defEn: g.def_en }))}
+                sectionSlug={file.section_slug}
+                sectionName={sectionName}
+              />
+            ) : (
+              <div role="alert" className="card flex flex-col items-start gap-2 border-[color-mix(in_srgb,var(--brand-orange)_40%,var(--line))] p-5">
+                <h2 className="text-[14px] font-extrabold">{lang === "ar" ? "النسخة غير متاحة" : "File version unavailable"}</h2>
+                <p className="text-[12.5px] leading-relaxed text-[var(--muted)]">
+                  {lang === "ar"
+                    ? "لم يكتمل حفظ هذا الملف في التخزين، لذلك لا توجد نسخة PDF يمكن عرضها. يجب إعادة رفع الملف."
+                    : "This file was not fully saved to storage, so there is no PDF version to display. The file needs to be uploaded again."}
+                </p>
+                {isAdmin && (
+                  <Link href={"/admin/files/" + file.id} className="btn btn-primary btn-sm">
+                    {lang === "ar" ? "إعادة رفع الملف" : "Upload file again"}
+                  </Link>
+                )}
+              </div>
+            )
           ) : (
             <UnlockForm fileId={file.id} lang={lang} />
           )}
