@@ -137,15 +137,23 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     changelog,
   });
 
-  await addChangelog({
-    fileId: id,
-    kind: "update",
-    titleAr: `نسخة جديدة (v${version}): ${file.title_ar}`,
-    titleEn: `New version (v${version}): ${file.title_en}`,
-    detailAr: changelog || "استُبدل الملف بنسخة محدّثة",
-    detailEn: changelog || "File replaced with an updated version",
-    version,
-  });
+  if (!result.ok) {
+    return Response.json({ ok: false, error: result.error, stage: result.stage, version }, { status: 502 });
+  }
 
-  return Response.json({ ok: result.ok, error: result.ok ? undefined : result.error, version });
+  try {
+    await addChangelog({
+      fileId: id,
+      kind: "update",
+      titleAr: `نسخة جديدة (v${version}): ${file.title_ar}`,
+      titleEn: `New version (v${version}): ${file.title_en}`,
+      detailAr: changelog || "استُبدل الملف بنسخة محدّثة",
+      detailEn: changelog || "File replaced with an updated version",
+      version,
+    });
+  } catch (err) {
+    console.error("[admin/files] version changelog insert failed", err);
+  }
+
+  return Response.json({ ok: true, version, warning: result.warning });
 }

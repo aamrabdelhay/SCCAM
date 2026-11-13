@@ -29,7 +29,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "zod": "3.24.1",
-    "@neondatabase/serverless": "^1.2.0"
+    "@neondatabase/serverless": "^1.2.0",
+    "@vercel/blob": "^2.9.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "2.4.6",

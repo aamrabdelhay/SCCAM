@@ -8,21 +8,18 @@ import {
   Download,
   Eye,
   FileText,
-  Flag,
   Layers,
   Printer,
   Ruler,
   ShieldCheck,
   Sparkles,
   Tag,
-  Users,
 } from "lucide-react";
 import { getLang } from "@/lib/server-lang";
 import {
   getChangelogForFile,
   getFile,
   getRelatedFiles,
-  getSiteSettings,
   getVersions,
   getGlossary,
   getCategories,
@@ -37,7 +34,6 @@ import { SharePanel } from "@/components/file/SharePanel";
 import { PageRangeTool } from "@/components/file/PageRangeTool";
 import { CitationBox } from "@/components/file/CitationBox";
 import { UnlockForm } from "@/components/file/UnlockForm";
-import { ReportButton } from "@/components/file/ReportButton";
 import { FileMiniCard } from "@/components/FileCard";
 import { ImportanceBadge, NewBadge, PinnedBadge, UpdatedBadge } from "@/components/Badges";
 
@@ -76,8 +72,7 @@ export default async function FilePage({ params, searchParams }: Params) {
   const file = await getFile(id, isAdmin);
   if (!file) notFound();
 
-  const [settings, versions, related, changelog, glossary, categories] = await Promise.all([
-    getSiteSettings(),
+  const [versions, related, changelog, glossary, categories] = await Promise.all([
     getVersions(id),
     getRelatedFiles(file),
     getChangelogForFile(id),
@@ -363,27 +358,6 @@ export default async function FilePage({ params, searchParams }: Params) {
             hasTextLayer={hasText}
           />
 
-          <section className="card p-4">
-            <h2 className="flex items-center gap-2 text-[13px] font-bold">
-              <Flag className="h-4 w-4 text-[var(--accent)]" aria-hidden="true" />
-              {t(lang, "reportIssue")}
-            </h2>
-            <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
-              {t(lang, "contactDesc")}
-            </p>
-            <ReportButton lang={lang} fileId={file.id} page={initialPage} />
-          </section>
-
-          <section className="card p-4">
-            <h2 className="flex items-center gap-2 text-[13px] font-bold">
-              <Users className="h-4 w-4 text-[var(--accent)]" aria-hidden="true" />
-              {t(lang, "askAdmin")}
-            </h2>
-            <Link href="/contact" className="btn btn-outline btn-sm mt-2 w-full">
-              {t(lang, "contactTitle")}
-            </Link>
-            <p className="mt-2 text-[10.5px] text-[var(--muted)]">{settings.contact_email}</p>
-          </section>
         </aside>
       </div>
     </div>

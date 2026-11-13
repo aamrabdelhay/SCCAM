@@ -56,7 +56,13 @@ export function NewFileForm({ lang }: { lang: Lang }) {
         router.push("/admin/files/" + data.id);
         router.refresh();
       } else {
-        setError(data.error ?? t(lang, "error"));
+        setError(data.error === "storage-failed"
+          ? (lang === "ar" ? "تعذر حفظ الملف في التخزين الدائم. حاول مرة أخرى." : "The file could not be saved to persistent storage. Please try again.")
+          : data.error === "file-required"
+            ? (lang === "ar" ? "اختر ملفًا أولًا." : "Choose a file first.")
+            : data.error === "section-required"
+              ? (lang === "ar" ? "تعذر تحديد القسم. اختره مرة أخرى." : "The section could not be resolved. Select it again.")
+              : (lang === "ar" ? "تعذر رفع الملف. حاول مرة أخرى." : "The file could not be uploaded. Please try again."));
       }
     } catch {
       setError(t(lang, "error"));

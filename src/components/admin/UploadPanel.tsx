@@ -19,6 +19,25 @@ type UploadJob = {
   fileId?: string;
 };
 
+function uploadErrorText(code: string | undefined, status: number, lang: Lang): string {
+  if (lang === "ar") {
+    if (status === 413) return "حجم الملف أكبر من الحد المسموح به من الخادم.";
+    if (code === "storage-failed") return "تعذر حفظ الملف في التخزين الدائم. لم يُضف الملف إلى المكتبة؛ حاول مرة أخرى.";
+    if (code === "section-required") return "تعذر تحديد القسم. حدّد القسم مرة أخرى ثم أعد المحاولة.";
+    if (code === "file-required") return "اختر ملفًا أولًا.";
+    if (code === "title-required") return "اكتب اسمًا للملف.";
+    if (code === "server-response-invalid") return "الخادم أعاد استجابة غير متوقعة. حاول مرة أخرى.";
+    return "تعذر رفع الملف. تحقق من اتصالك ثم حاول مرة أخرى.";
+  }
+  if (status === 413) return "The file is larger than the server upload limit.";
+  if (code === "storage-failed") return "The file could not be saved to persistent storage. It was not added to the library; please try again.";
+  if (code === "section-required") return "The section could not be resolved. Select it again and retry.";
+  if (code === "file-required") return "Choose a file first.";
+  if (code === "title-required") return "Enter a file title.";
+  if (code === "server-response-invalid") return "The server returned an unexpected response. Please try again.";
+  return "The file could not be uploaded. Check your connection and try again.";
+}
+
 export function UploadPanel({ lang }: { lang: Lang }) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -75,20 +94,46 @@ export function UploadPanel({ lang }: { lang: Lang }) {
       };
       xhr.onload = () => {
         try {
-          const data = JSON.parse(xhr.responseText) as { id?: string; ok?: boolean; error?: string };
+          const data = JSON.parse(xhr.responseText) as { id?: string; ok?: boolean; error?: string; warning?: string };
           if (xhr.status >= 200 && xhr.status < 300 && data.id && data.ok !== false) {
-            setJob({ id: jobId, name: file.name, progress: 100, status: "done", fileId: data.id });
+            setJob({
+              id: jobId,
+              name: file.name,
+              progress: 100,
+              status: "done",
+              fileId: data.id,
+              message: data.warning,
+            });
             router.refresh();
           } else {
-            setJob({ id: jobId, name: file.name, progress: 0, status: "error", message: data.error ?? "upload-failed", fileId: data.id });
+            setJob({
+              id: jobId,
+              name: file.name,
+              progress: 0,
+              status: "error",
+              message: uploadErrorText(data.error, xhr.status, lang),
+              fileId: data.id,
+            });
           }
         } catch {
-          setJob({ id: jobId, name: file.name, progress: 0, status: "error", message: "invalid-response" });
+          setJob({
+            id: jobId,
+            name: file.name,
+            progress: 0,
+            status: "error",
+            message: uploadErrorText("server-response-invalid", xhr.status, lang),
+          });
         }
         resolve();
       };
       xhr.onerror = () => {
-        setJob({ id: jobId, name: file.name, progress: 0, status: "error", message: "network" });
+        setJob({
+          id: jobId,
+          name: file.name,
+          progress: 0,
+          status: "error",
+          message: lang === "ar" ? "فشل الاتصال بالخادم أثناء الرفع." : "The connection failed during upload.",
+        });
         resolve();
       };
       xhr.send(form);
@@ -161,7 +206,8 @@ export function UploadPanel({ lang }: { lang: Lang }) {
               <div className="h-full rounded-full bg-[linear-gradient(90deg,var(--brand-green),var(--brand-yellow),var(--brand-orange))] transition-all duration-200" style={{ width: job.progress + "%" }} />
             </div>
           )}
-          {job.status === "error" && <p className="mt-1 text-[11px] text-[var(--danger)]">{job.message}</p>}
+          {job.status === "error" && <p role="alert" className="mt-1 text-[11px] text-[var(--danger)]">{job.message}</p>}
+          {job.status === "done" && job.message && <p className="mt-1 text-[11px] text-[var(--accent)]">{lang === "ar" ? "تم رفع الملف، لكن تعذر استخراج النص: " : "Uploaded, but text extraction failed: "}{job.message}</p>}
           {job.fileId && <a href={"/admin/files/" + job.fileId} className="mt-2 inline-flex text-[11px] font-semibold link">{t(lang, "edit")} →</a>}
         </div>
       )}
